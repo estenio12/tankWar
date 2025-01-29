@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://cmtar6dmqlrtq"]
+
+[ext_resource type="Script" path="res://Actors/Bullet/bullet.gd" id="1_qcdem"]
+[ext_resource type="Texture2D" uid="uid://dinej5exfhevb" path="res://Actors/Player/tank.png" id="2_bo5qx"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nv157"]
+radius = 5.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dh60c"]
+atlas = ExtResource("2_bo5qx")
+region = Rect2(34.9538, 3.94691, 9.07642, 4.09292)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ld3xp"]
+load_path = "res://.godot/imported/tank.png-fe273694a609522d3ab60753a62a3187.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_852vu"]
+atlas = SubResource("CompressedTexture2D_ld3xp")
+region = Rect2(93.9199, 3.91143, 9.18716, 4.17304)
+
+[node name="Bullet" type="Area2D"]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_qcdem")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-4, 0)
+shape = SubResource("CircleShape2D_nv157")
+
+[node name="GreenPlayerBullet" type="TextureRect" parent="."]
+offset_left = -9.0
+offset_top = -2.0
+offset_right = 1.0
+offset_bottom = 2.0
+texture = SubResource("AtlasTexture_dh60c")
+
+[node name="RedPlayerBullet" type="TextureRect" parent="."]
+visible = false
+offset_left = -9.0
+offset_top = -2.0
+offset_right = 1.0
+offset_bottom = 2.0
+texture = SubResource("AtlasTexture_852vu")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

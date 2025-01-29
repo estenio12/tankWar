@@ -1,0 +1,39 @@
+extends Node
+
+class_name EGlobalEnums
+
+enum PLAYER_TYPE 
+{ 
+    GREEN_PLAYER, 
+    RED_PLAYER
+};
+
+enum ACTION
+{
+    MOVIMENT,
+    ATTACK,
+    SELECTION,
+    WAIT_SERVER,
+    CHANGE_PLAYER
+}
+
+enum NETCODE
+{
+    MOVIMENT,
+    RESET_MOVIMENT,
+    APPLY_MOVIMENT,
+    ATTACK,
+    APPLY_ATTACK,
+    CHANGE_PLAYER,
+    SELECTION,
+    POWERUP
+}
+
+enum POWERUP
+{
+    SHIELD,
+    DOUBLE_BULLET,
+    HP_RECOVER,
+    RESTORE_ACTION,
+    NONE
+}
