@@ -1,8 +1,10 @@
+CenterContainer
+CollisionShape2D
+Node2D
+Area2D
 ProgressBar
 SubViewport
 SubViewportContainer
-CollisionShape2D
-Area2D
 TextureButton
 TextureRect
 Control
@@ -11,4 +13,3 @@ ColorRect
 CharacterBody2D
 Label
 VBoxContainer
-CenterContainer

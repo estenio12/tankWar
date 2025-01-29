@@ -49,6 +49,7 @@ region_enabled = true
 region_rect = Rect2(14.5574, 25.2774, 39.763, 23.4365)
 
 [node name="RedTank" type="Node2D" parent="."]
+visible = false
 
 [node name="Cannon" type="Sprite2D" parent="RedTank"]
 position = Vector2(-2, -7)
@@ -84,24 +85,24 @@ shape = SubResource("RectangleShape2D_pfkag")
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_8eq24")
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+[node name="GreenHPBarContainer" type="SubViewportContainer" parent="."]
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = -25.0
-offset_top = 12.5
+offset_top = 14.0
 offset_right = 25.0
-offset_bottom = 22.5
+offset_bottom = 24.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GreenPlayer" type="SubViewport" parent="SubViewportContainer"]
+[node name="GreenPlayer" type="SubViewport" parent="GreenHPBarContainer"]
 handle_input_locally = false
 size = Vector2i(50, 10)
 render_target_update_mode = 4
 
-[node name="ProgressBar" type="ProgressBar" parent="SubViewportContainer/GreenPlayer"]
+[node name="ProgressBar" type="ProgressBar" parent="GreenHPBarContainer/GreenPlayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -112,12 +113,24 @@ theme_override_styles/fill = SubResource("StyleBoxTexture_g37le")
 value = 100.0
 show_percentage = false
 
-[node name="RedPlayer" type="SubViewport" parent="SubViewportContainer"]
+[node name="RedHPBarContainer" type="SubViewportContainer" parent="."]
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = 13.5
+offset_right = 25.0
+offset_bottom = 23.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RedPlayer" type="SubViewport" parent="RedHPBarContainer"]
 handle_input_locally = false
 size = Vector2i(50, 10)
 render_target_update_mode = 4
 
-[node name="ProgressBar" type="ProgressBar" parent="SubViewportContainer/RedPlayer"]
+[node name="ProgressBar" type="ProgressBar" parent="RedHPBarContainer/RedPlayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

@@ -94,6 +94,9 @@ func ApplyAction() -> void:
 	UpdateLabelActionCount();
 	ActionManager();
 
+func ShowWinnerScreen(pwinner: String) -> void:
+	DisableAllHUDs();
+
 #------------------------- DATA SERVER PROCESSING 
 
 func _on_receive_data_from_server(strPacket: String) -> void:
@@ -133,6 +136,15 @@ func _on_receive_data_from_server(strPacket: String) -> void:
 		EGlobalEnums.NETCODE.APPLY_ATTACK:
 			# print("Debug Apply Attack: ", packet);
 			ref_bullet.fire(packet["position"], packet["angle"], packet["power"]);
+		EGlobalEnums.NETCODE.END_GAME:
+			var player_won = packet["position"] as EGlobalEnums.PLAYER_TYPE;
+			var winner_name: String = "Unnamed";
+			if(player_won == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
+				winner_name = ref_green_player.player_name;
+			else:
+				winner_name = ref_red_player.player_name;
+				
+			ShowWinnerScreen(winner_name);
 		EGlobalEnums.NETCODE.POWERUP:
 			pass
 
@@ -187,6 +199,11 @@ func _on_bullet_stop(isPlayer: bool) -> void:
 			ref_red_player.ApplyDamage();
 		else:
 			ref_green_player.ApplyDamage();
+	
+	current_action = EGlobalEnums.ACTION.SELECTION;
+	ApplyAction();
 
-
-
+func _on_player_dead(pplayer: EGlobalEnums.PLAYER_TYPE) -> void:
+	var player_won = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER if(pplayer == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER) else EGlobalEnums.PLAYER_TYPE.RED_PLAYER;
+	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.END_GAME, "player": player_won})
+		

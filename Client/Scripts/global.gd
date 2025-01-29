@@ -13,19 +13,6 @@ func GetCurrentPlayer() -> EGlobalEnums.PLAYER_TYPE:
 func SendToServer(packet: Dictionary) -> void:
 	FakeServer(packet);
 
-func ConvertTransform2D_to_String(target: Transform2D) -> String:
-	var vec_x = target.x;
-	var vec_y = target.y;
-	var vec_o = target.origin;
-	return str(vec_x) + "#" + str(vec_y) + "#" + str(vec_o);
-
-func ConvertString_to_Transform2D(target: String) -> Transform2D:
-	var chunks = target.split("#");
-	var vec_x = str_to_var("Vector2"+chunks[0]);
-	var vec_y = str_to_var("Vector2"+chunks[1]);
-	var vec_o = str_to_var("Vector2"+chunks[2]);
-	return Transform2D(vec_x, vec_y, vec_o); 
-
 #region FAKE SERVER
 
 func FakeServer(packet: Dictionary) -> void:
@@ -59,6 +46,9 @@ func FakeServer(packet: Dictionary) -> void:
 			pack += str(packet["position"]) + "|";
 			pack += str(packet["angle"]) + "|";
 			pack += str(packet["power"]);
+		EGlobalEnums.NETCODE.END_GAME:
+			pack += str(EGlobalEnums.NETCODE.END_GAME) + "|";
+			pack += str(packet["player"]);
 
 	ReceiveDataFromServer.emit(pack);
 

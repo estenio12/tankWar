@@ -2,12 +2,16 @@ extends CharacterBody2D
 
 class_name Player
 
+signal PlayerDead(player_type: EGlobalEnums.PLAYER_TYPE);
+
 @onready var ref_green_tank: Node2D = $GreenTank;
 @onready var ref_red_tank: Node2D   = $RedTank;
 @onready var ref_green_tank_cannon  = $GreenTank/Cannon;
 @onready var ref_red_tank_cannon  	= $RedTank/Cannon;
-@onready var ref_green_tank_hp_bar  = $SubViewportContainer/GreenPlayer/ProgressBar;
-@onready var ref_red_tank_hp_bar 	= $SubViewportContainer/RedPlayer/ProgressBar;
+@onready var ref_green_tank_hp_bar  = $GreenHPBarContainer/GreenPlayer/ProgressBar;
+@onready var ref_red_tank_hp_bar 	= $RedHPBarContainer/RedPlayer/ProgressBar;
+@onready var ref_green_tank_hp_container = $GreenHPBarContainer;
+@onready var ref_red_tank_hp_container   = $RedHPBarContainer;
 
 @onready var ref_spawn_bullet_green_player = $GreenTank/Cannon/SpawnBullet;
 @onready var ref_spawn_bullet_red_player = $RedTank/Cannon/SpawnBullet;
@@ -73,11 +77,15 @@ func RedPlayerCannonRotation(delta: float) -> void:
 func LoadGreenPlayer() -> void:
 	ref_green_tank.visible = true;
 	ref_red_tank.visible   = false;
+	ref_green_tank_hp_container.visible = true;
+	ref_red_tank_hp_container.visible   = false;
 	player_name = "Green Player";
 	
 func LoadRedPlayer() -> void:
 	ref_red_tank.visible   = true;
 	ref_green_tank.visible = false;
+	ref_green_tank_hp_container.visible = false;
+	ref_red_tank_hp_container.visible   = true;
 	player_name = "Red Player";
 
 func SetPosition(newPos: Vector2) -> void:
@@ -115,10 +123,12 @@ func GetSpawnBulletAngle() -> float:
 
 func ApplyDamage() -> void:
 	currentHP = clamp(currentHP - 1, 0, 5);
-
 	var percent: float = (currentHP * 100) / MAX_HP;
 
 	if(player_type == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
 		ref_green_tank_hp_bar.value = percent
 	else:
 		ref_red_tank_hp_bar.value = percent
+
+	if(percent <= 0):
+		PlayerDead.emit(player_type);
