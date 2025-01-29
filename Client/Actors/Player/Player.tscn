@@ -97,7 +97,9 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="GreenPlayer" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
 size = Vector2i(50, 10)
+render_target_update_mode = 4
 
 [node name="ProgressBar" type="ProgressBar" parent="SubViewportContainer/GreenPlayer"]
 anchors_preset = 15
@@ -111,7 +113,9 @@ value = 100.0
 show_percentage = false
 
 [node name="RedPlayer" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
 size = Vector2i(50, 10)
+render_target_update_mode = 4
 
 [node name="ProgressBar" type="ProgressBar" parent="SubViewportContainer/RedPlayer"]
 anchors_preset = 15

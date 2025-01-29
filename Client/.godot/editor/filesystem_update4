@@ -1,9 +1,7 @@
-res://Actors/Bullet/bullet.gd
-res://Scripts/global.gd
 res://Maps/arena.gd
 res://Actors/Player/Player.gd
-res://Scripts/servernetpacket.gd
-res://Actors/Bullet/Bullet.tscn
 res://Maps/Arena.tscn
 res://Actors/Player/Player.tscn
-res://Scripts/eplayerType.gd
+res://Actors/Bullet/Bullet.tscn
+res://Actors/Bullet/bullet.gd
+res://Maps/Camera.gd

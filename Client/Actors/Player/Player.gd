@@ -95,9 +95,6 @@ func ApplyPosition() -> void:
 	start_position = self.global_position;
 	recording_last_postion = false;
 
-func GetHP() -> float:
-	return currentHP;
-
 func GetFireProperty() -> Dictionary:
 	return {
 		"position": GetSpawnBulletPosition(),
