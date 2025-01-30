@@ -1,3 +1,9 @@
+Sprite2D
+AnimatedSprite2D
+Label
+ColorRect
+VBoxContainer
+TextureButton
 CenterContainer
 CollisionShape2D
 Node2D
@@ -5,11 +11,5 @@ Area2D
 ProgressBar
 SubViewport
 SubViewportContainer
-TextureButton
 TextureRect
 Control
-Marker2D
-ColorRect
-CharacterBody2D
-Label
-VBoxContainer

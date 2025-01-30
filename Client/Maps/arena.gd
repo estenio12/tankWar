@@ -14,6 +14,9 @@ signal placement_selected(global_position: Vector2);
 @onready var ref_hud_player_name: Label = $HUD/ChangePlayer/VBoxContainer/PlayerName
 @onready var ref_hud_power_attack_container: HBoxContainer = $HUD/AttackForceContainer
 @onready var ref_hud_power_attack: ProgressBar = $HUD/AttackForceContainer/ProgressBar
+@onready var ref_hud_won_screen: CenterContainer = $HUD/WonScreen;
+@onready var ref_hud_winner_name: Label = $HUD/WonScreen/VBoxContainer/WinnerName;
+@onready var ref_hud_won_screen_close_game = $HUD/WonScreen/VBoxContainer/CloseGame;
 @onready var ref_bullet: Area2D = $Bullet;
 
 const MAX_ACTION_POINTS: int = 2;
@@ -21,6 +24,7 @@ const MAX_ATTACK_SECTION: int = 2;
 var attack_section: int = 1;
 var power_direction: int = 10;
 var in_power_selection: bool = false;
+var is_game_end: bool = false;
 
 var action_point: int = MAX_ACTION_POINTS;
 var players: Array[CharacterBody2D] = [];
@@ -33,6 +37,8 @@ func _ready() -> void:
 	self.placement_selected.connect(Callable(self, "_on_placement_selected"));
 	self.ref_bullet.BulletStop.connect(Callable(self, "_on_bullet_stop"));
 	Global.ReceiveDataFromServer.connect(Callable(self, "_on_receive_data_from_server"));
+	self.ref_green_player.PlayerDead.connect(Callable(self, "_on_player_dead"));
+	self.ref_red_player.PlayerDead.connect(Callable(self, "_on_player_dead"));
 
 	self.players = [ref_green_player, ref_red_player];
 	self.placements = [ref_placement_green_player, ref_placement_red_player];
@@ -59,6 +65,8 @@ func UpdateLabelActionCount() -> void:
 	ref_label_action_count.text = str(action_point);
 
 func ActionManager() -> void:
+	if(is_game_end): return;
+	
 	DisableAllHUDs();
 
 	match(current_action):
@@ -83,6 +91,7 @@ func DisableAllHUDs() -> void:
 	ref_placement_green_player.visible = false;
 	ref_placement_red_player.visible   = false;
 	ref_hud_change_player.visible      = false;
+	ref_hud_won_screen.visible 		   = false;
 	ref_hud_power_attack_container.visible = false;
 
 func ApplyAction() -> void:
@@ -96,6 +105,10 @@ func ApplyAction() -> void:
 
 func ShowWinnerScreen(pwinner: String) -> void:
 	DisableAllHUDs();
+	ref_hud_winner_name.text = pwinner;
+	ref_hud_won_screen.visible = true;
+	await get_tree().create_timer(2).timeout;
+	ref_hud_won_screen_close_game.visible = true;
 
 #------------------------- DATA SERVER PROCESSING 
 
@@ -137,8 +150,9 @@ func _on_receive_data_from_server(strPacket: String) -> void:
 			# print("Debug Apply Attack: ", packet);
 			ref_bullet.fire(packet["position"], packet["angle"], packet["power"]);
 		EGlobalEnums.NETCODE.END_GAME:
-			var player_won = packet["position"] as EGlobalEnums.PLAYER_TYPE;
+			var player_won = packet["player"] as EGlobalEnums.PLAYER_TYPE;
 			var winner_name: String = "Unnamed";
+			
 			if(player_won == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
 				winner_name = ref_green_player.player_name;
 			else:
@@ -194,16 +208,18 @@ func _on_btn_apply_action_back_button_up() -> void:
 			ActionManager();
 
 func _on_bullet_stop(isPlayer: bool) -> void:
-	if(isPlayer):
-		if(Global.GetCurrentPlayer() == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
-			ref_red_player.ApplyDamage();
-		else:
-			ref_green_player.ApplyDamage();
-	
-	current_action = EGlobalEnums.ACTION.SELECTION;
-	ApplyAction();
+	if(!is_game_end):
+		if(isPlayer):
+			if(Global.GetCurrentPlayer() == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
+				ref_red_player.ApplyDamage();
+			else:
+				ref_green_player.ApplyDamage();
+		
+		current_action = EGlobalEnums.ACTION.SELECTION;
+		ApplyAction();
 
 func _on_player_dead(pplayer: EGlobalEnums.PLAYER_TYPE) -> void:
-	var player_won = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER if(pplayer == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER) else EGlobalEnums.PLAYER_TYPE.RED_PLAYER;
-	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.END_GAME, "player": player_won})
+	is_game_end = true;
+	var player_won = EGlobalEnums.PLAYER_TYPE.RED_PLAYER if(pplayer == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER) else EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
+	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.END_GAME, "player": player_won});
 		

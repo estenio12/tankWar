@@ -1,9 +1,5 @@
+res://Actors/BulletExplosion/BulletExplosion.tscn
+res://Actors/BulletExplosion/bullet_explosion.gd
 res://Maps/Arena.tscn
-res://Maps/arena.gd
-res://Actors/Bullet/bullet.gd
 res://Actors/Player/Player.tscn
 res://Actors/Bullet/Bullet.tscn
-res://Actors/Player/Player.gd
-res://Scripts/eplayerType.gd
-res://Scripts/global.gd
-res://Scripts/servernetpacket.gd
