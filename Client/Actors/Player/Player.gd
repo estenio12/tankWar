@@ -15,6 +15,7 @@ signal PlayerDead(player_type: EGlobalEnums.PLAYER_TYPE);
 
 @onready var ref_spawn_bullet_green_player = $GreenTank/Cannon/SpawnBullet;
 @onready var ref_spawn_bullet_red_player = $RedTank/Cannon/SpawnBullet;
+@onready var ref_hurt_box = $HurtBox;
 
 @export var player_type: EGlobalEnums.PLAYER_TYPE = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
 
@@ -33,6 +34,7 @@ var red_player_current_direction: int 	= 1;
 var select_angle_active: bool 			= false;
 
 func _ready() -> void:
+	ref_hurt_box.player_type = player_type;
 	# Mostra sprite de acordo com o player_type.
 	if(player_type == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
 		LoadGreenPlayer();

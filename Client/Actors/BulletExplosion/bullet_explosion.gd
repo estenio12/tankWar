@@ -4,4 +4,4 @@ extends Node2D
 
 func Active(ppos: Vector2) -> void:
 	global_position = ppos;
-	ref_anim.play("explosion");
+	ref_anim.play("explosion", 2.0);

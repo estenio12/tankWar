@@ -1,12 +1,3 @@
-res://Actors/BulletExplosion/bullet_explosion.gd
-res://Scripts/eplayerType.gd
-res://Maps/arena.gd
-res://Actors/Bullet/bullet.gd
-res://Scripts/servernetpacket.gd
-res://Scripts/global.gd
-res://Actors/Player/Player.gd
-res://Maps/Camera.gd
 res://Maps/Arena.tscn
-res://Actors/Player/Player.tscn
-res://Actors/Bullet/Bullet.tscn
-res://Actors/BulletExplosion/BulletExplosion.tscn
+res://UI/lobby.tscn
+res://Maps/arena.gd

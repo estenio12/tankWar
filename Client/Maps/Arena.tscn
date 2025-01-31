@@ -554,7 +554,7 @@ font_color = Color(1, 0.727613, 0.583038, 1)
 atlas = ExtResource("12_km1gm")
 region = Rect2(251.922, 296.065, 201.536, 74.6453)
 
-[sub_resource type="LabelSettings" id="LabelSettings_yahng"]
+[sub_resource type="LabelSettings" id="LabelSettings_k8aqq"]
 font = ExtResource("9_dm43l")
 font_size = 30
 font_color = Color(1, 1, 1, 0.819608)
@@ -580,7 +580,7 @@ script = ExtResource("1_u7kww")
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 
 [node name="Far" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(811, 0)
+motion_mirroring = Vector2(810, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Far"]
 position = Vector2(0, -243)
@@ -589,7 +589,6 @@ texture = ExtResource("2_va0tw")
 centered = false
 
 [node name="Near" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(811, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Near"]
 position = Vector2(0, -243)
@@ -598,7 +597,7 @@ texture = ExtResource("3_1x1yu")
 centered = false
 
 [node name="Next" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(811, 0)
+motion_mirroring = Vector2(810, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Next"]
 position = Vector2(0, -243)
@@ -613,7 +612,7 @@ tile_set = SubResource("TileSet_ndqjg")
 metadata/_edit_lock_ = true
 
 [node name="RedSideLevel" type="TileMapLayer" parent="."]
-position = Vector2(11, 0)
+position = Vector2(-373, -4)
 scale = Vector2(-1, 1)
 tile_map_data = PackedByteArray("AACd/wQAAAAEAAAAAACd/wUAAAACAAEAAACd/wYAAAACAAIAAACd/wcAAAACAAIAAACd/wgAAAABAAIAAACd/wkAAAABAAIAAACd/woAAAACAAIAAACd/wsAAAACAAIAAACd/wwAAAACAAIAAACd/w0AAAACAAIAAACd/w4AAAACAAIAAACe/wQAAAAEAAAAAACe/wUAAAACAAEAAACe/wYAAAACAAIAAACe/wcAAAACAAIAAACe/wgAAAABAAIAAACe/wkAAAABAAIAAACe/woAAAACAAIAAACe/wsAAAACAAIAAACe/wwAAAACAAIAAACe/w0AAAACAAIAAACe/w4AAAACAAIAAACf/wQAAAAFAAAAAACf/wUAAAAFAAEAAACf/wYAAAAFAAkAAACf/wcAAAABAAEAAACf/wgAAAABAAIAAACf/wkAAAABAAIAAACf/woAAAACAAIAAACf/wsAAAACAAIAAACf/wwAAAACAAIAAACf/w0AAAACAAIAAACf/w4AAAACAAIAAACg/wYAAAAEAAAAAACg/wcAAAACAAEAAACg/wgAAAABAAIAAACg/wkAAAABAAIAAACg/woAAAACAAIAAACg/wsAAAACAAIAAACg/wwAAAACAAIAAACg/w0AAAACAAIAAACg/w4AAAACAAIAAACh/wYAAAAEAAAAAACh/wcAAAACAAIAAACh/wgAAAACAAIAAACh/wkAAAACAAIAAACh/woAAAACAAIAAACh/wsAAAACAAIAAACh/wwAAAACAAIAAACh/w0AAAACAAIAAACh/w4AAAACAAIAAACi/wYAAAAEAAAAAACi/wcAAAACAAIAAACi/wgAAAACAAIAAACi/wkAAAACAAIAAACi/woAAAACAAIAAACi/wsAAAACAAIAAACi/wwAAAACAAIAAACi/w0AAAACAAIAAACi/w4AAAACAAIAAACj/wYAAAAFAAAAAACj/wcAAAAFAAEAAACj/wgAAAAFAAIAAACj/wkAAAAFAAkAAACj/woAAAACAAIAAACj/wsAAAACAAIAAACj/wwAAAACAAIAAACj/w0AAAACAAIAAACj/w4AAAACAAIAAACk/wkAAAACAAAAAACk/woAAAACAAEAAACk/wsAAAABAAIAAACk/wwAAAABAAIAAACk/w0AAAABAAIAAACk/w4AAAABAAIAAACl/wkAAAACAAAAAACl/woAAAACAAEAAACl/wsAAAABAAIAAACl/wwAAAABAAIAAACl/w0AAAABAAIAAACl/w4AAAABAAIAAACm/wkAAAACAAAAAACm/woAAAACAAEAAACm/wsAAAACAAIAAACm/wwAAAABAAIAAACm/w0AAAABAAIAAACm/w4AAAABAAIAAACn/wkAAAACAAAAAACn/woAAAACAAEAAACn/wsAAAACAAIAAACn/wwAAAACAAIAAACn/w0AAAACAAIAAACn/w4AAAABAAIAAACo/wkAAAACAAAAAACo/woAAAACAAEAAACo/wsAAAACAAEAAACo/wwAAAABAAIAAACo/w0AAAACAAIAAACo/w4AAAABAAIAAACp/wkAAAACAAAAAACp/woAAAACAAEAAACp/wsAAAACAAIAAACp/wwAAAABAAIAAACp/w0AAAACAAIAAACp/w4AAAABAAIAAACq/wkAAAACAAAAAACq/woAAAACAAEAAACq/wsAAAACAAIAAACq/wwAAAABAAIAAACq/w0AAAACAAIAAACq/w4AAAABAAIAAACr/wkAAAACAAAAAACr/woAAAACAAEAAACr/wsAAAABAAIAAACr/wwAAAABAAIAAACr/w0AAAABAAIAAACr/w4AAAABAAIAAACs/wkAAAACAAAAAACs/woAAAACAAEAAACs/wsAAAABAAIAAACs/wwAAAABAAIAAACs/w0AAAABAAIAAACs/w4AAAABAAIAAACt/wkAAAAFAAAAAACt/woAAAAFAAEAAACt/wsAAAAFAAEAAACt/wwAAAAFAAEAAACt/w0AAAAFAAEAAACt/w4AAAAFAAEAAACz/wkAAAAAAAAAAACz/woAAAAAAAUAAAC0/wkAAAADAAAAAAC0/woAAAAEAAUAAAC1/wkAAAADAAAAAAC1/woAAAAEAAUAAAC2/wkAAAADAAAAAAC2/woAAAAEAAUAAAC3/wkAAAAFAAAAAAC3/woAAAAFAAUAAACt/w8AAAAFAAIAAACt/xAAAAAFAAIAAACt/xEAAAAFAAIAAACs/w8AAAACAAIAAACs/xAAAAACAAIAAACs/xEAAAACAAIAAACr/xEAAAACAAIAAACq/xEAAAACAAIAAACp/xEAAAACAAIAAACp/xAAAAACAAIAAACq/xAAAAACAAIAAACq/w8AAAACAAIAAACr/w8AAAACAAIAAACr/xAAAAACAAIAAACp/w8AAAACAAIAAACo/w8AAAACAAIAAACn/w8AAAACAAIAAACm/w8AAAACAAIAAACm/xAAAAACAAIAAACn/xAAAAACAAIAAACn/xEAAAACAAIAAACo/xEAAAACAAIAAACo/xAAAAACAAIAAACm/xEAAAACAAIAAACl/xEAAAACAAIAAACl/xAAAAACAAIAAACl/w8AAAACAAIAAACk/w8AAAACAAIAAACk/xAAAAACAAIAAACk/xEAAAACAAIAAACj/w8AAAACAAIAAACj/xAAAAACAAIAAACj/xEAAAACAAIAAACi/xAAAAACAAIAAACh/xAAAAACAAIAAACh/w8AAAACAAIAAACi/w8AAAACAAIAAACi/xEAAAACAAIAAACh/xEAAAACAAIAAACg/xEAAAACAAIAAACg/xAAAAACAAIAAACf/xAAAAACAAIAAACf/w8AAAACAAIAAACg/w8AAAACAAIAAACd/w8AAAACAAIAAACd/xAAAAACAAIAAACd/xEAAAACAAIAAACe/xEAAAACAAIAAACe/xAAAAACAAIAAACe/w8AAAACAAIAAACf/xEAAAACAAIAAACd/wMAAAAFAAIAAACd/wIAAAAFAAIAAACd/wEAAAAFAAIAAACd/wAAAAAFAAIAAACd////AAAFAAIAAACd//7/AAAFAAAAAAA=")
 tile_set = SubResource("TileSet_ndqjg")
@@ -665,7 +664,7 @@ position = Vector2(392, 158)
 shape = SubResource("RectangleShape2D_tvyd6")
 
 [node name="RedSide" type="Node2D" parent="EnvCollisionGroup"]
-position = Vector2(1211, 2)
+position = Vector2(826, -2)
 
 [node name="col1" type="Area2D" parent="EnvCollisionGroup/RedSide"]
 collision_layer = 2
@@ -710,7 +709,7 @@ shape = SubResource("RectangleShape2D_2n8by")
 [node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("ref_green_player", "ref_red_player", "ref_bullet")]
 limit_left = 0
 limit_top = -240
-limit_right = 1595
+limit_right = 1211
 limit_bottom = 210
 position_smoothing_enabled = true
 editor_draw_limits = true
@@ -747,27 +746,27 @@ position = Vector2(393, 107)
 gizmo_extents = 80.0
 
 [node name="RP_1" type="Marker2D" parent="MarkerGroup"]
-position = Vector2(1559, 24)
+position = Vector2(1174, 25)
 gizmo_extents = 80.0
 
 [node name="RP_2" type="Marker2D" parent="MarkerGroup"]
-position = Vector2(1510, 58)
+position = Vector2(1125, 59)
 gizmo_extents = 80.0
 
 [node name="RP_3" type="Marker2D" parent="MarkerGroup"]
-position = Vector2(1461, 104)
+position = Vector2(1076, 105)
 gizmo_extents = 80.0
 
 [node name="RP_4" type="Marker2D" parent="MarkerGroup"]
-position = Vector2(1406, 103)
+position = Vector2(1021, 104)
 gizmo_extents = 80.0
 
 [node name="RP_5" type="Marker2D" parent="MarkerGroup"]
-position = Vector2(1352, 104)
+position = Vector2(967, 105)
 gizmo_extents = 80.0
 
 [node name="RP_6" type="Marker2D" parent="MarkerGroup"]
-position = Vector2(1207, 104)
+position = Vector2(822, 105)
 gizmo_extents = 80.0
 
 [node name="Bullet" parent="." instance=ExtResource("8_52e3h")]
@@ -777,7 +776,7 @@ position = Vector2(-109, 50)
 position = Vector2(79, 86)
 
 [node name="RedPlayer" parent="." instance=ExtResource("2_ojrsp")]
-position = Vector2(387, 120)
+position = Vector2(1123, 78)
 player_type = 1
 
 [node name="BulletExplosion" parent="." instance=ExtResource("9_lojp2")]
@@ -864,11 +863,11 @@ visible = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = 1163.0
-offset_right = 1705.0
-offset_bottom = 512.0
+offset_left = 779.0
+offset_top = -6.0
+offset_right = 1321.0
+offset_bottom = 506.0
 grow_horizontal = 0
-metadata/_edit_lock_ = true
 
 [node name="PlacementRedPlayer" type="SubViewport" parent="PlacementRedPlayer"]
 disable_3d = true
@@ -1105,7 +1104,6 @@ label_settings = SubResource("LabelSettings_ig1r0")
 horizontal_alignment = 1
 
 [node name="WonScreen" type="CenterContainer" parent="HUD"]
-visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1138,8 +1136,7 @@ color = Color(1, 1, 1, 0)
 [node name="WinnerName" type="Label" parent="HUD/WonScreen/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("9_dm43l")
-text = "Unnamed
-"
+text = "Unnamed"
 label_settings = SubResource("LabelSettings_1fipk")
 horizontal_alignment = 1
 
@@ -1150,6 +1147,7 @@ color = Color(1, 1, 1, 0)
 
 [node name="CloseGame" type="TextureButton" parent="HUD/WonScreen/VBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
 size_flags_vertical = 4
 texture_normal = SubResource("AtlasTexture_rq1q8")
 
@@ -1160,7 +1158,7 @@ offset_top = 3.0
 offset_right = 201.0
 offset_bottom = 64.0
 text = "Fechar"
-label_settings = SubResource("LabelSettings_yahng")
+label_settings = SubResource("LabelSettings_k8aqq")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1204,5 +1202,6 @@ show_percentage = false
 [connection signal="button_down" from="HUD/ChooseAction/VBoxContainer/HBoxContainer/AttackAction" to="." method="_on_attack_action_button_down"]
 [connection signal="button_up" from="HUD/ApplyAction/BtnAccept" to="." method="_on_btn_apply_action_accept_button_up"]
 [connection signal="button_up" from="HUD/ApplyAction/BtnBack" to="." method="_on_btn_apply_action_back_button_up"]
+[connection signal="button_down" from="HUD/WonScreen/VBoxContainer/CloseGame" to="." method="_on_close_game_button_down"]
 [connection signal="timeout" from="HUD/HUDGamplay/TimeManager" to="." method="_on_time_second_pass"]
 [connection signal="timeout" from="HUD/TurnTimer/TurnTimeManager" to="." method="_on_turn_timer_second_pass"]

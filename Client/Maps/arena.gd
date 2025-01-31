@@ -27,6 +27,8 @@ signal placement_selected(global_position: Vector2);
 @onready var ref_hud_turn_time_counter: ProgressBar = $HUD/TurnTimer/ProgressBar;
 @onready var ref_hud_turn_time_manager: Timer = $HUD/TurnTimer/TurnTimeManager;
 
+@onready var lobby_scene: PackedScene = preload("res://UI/lobby.tscn");
+
 const MAX_ACTION_POINTS: int = 2;
 const MAX_ATTACK_SECTION: int = 2;
 var attack_section: int = 1;
@@ -264,16 +266,21 @@ func _on_btn_apply_action_back_button_up() -> void:
 			GetCurrentPlayer().select_angle_active = false;
 			ActionManager();
 
-func _on_bullet_stop(isPlayer: bool, ppos: Vector2) -> void:
+func _on_bullet_stop(isPlayer: bool, ppos: Vector2, player_target: EGlobalEnums.PLAYER_TYPE) -> void:
 	if(!is_game_over):
 		if(isPlayer):
-			if(Global.GetCurrentPlayer() == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
-				ref_red_player.ApplyDamage();
-			else:
+			var current_p = Global.GetCurrentPlayer();
+			if(player_target == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER && current_p != EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
 				ref_green_player.ApplyDamage();
+				
+			if(player_target == EGlobalEnums.PLAYER_TYPE.RED_PLAYER && current_p != EGlobalEnums.PLAYER_TYPE.RED_PLAYER):
+				ref_red_player.ApplyDamage();
 		
 		ref_explosion.Active(ppos);
 		ref_camera.EnableTargetInBullet(false);
+		
+		if(action_point <= 1):
+			await get_tree().create_timer(1).timeout;
 		current_action = EGlobalEnums.ACTION.SELECTION;
 		ApplyAction();
 
@@ -310,3 +317,5 @@ func _on_turn_timer_second_pass() -> void:
 	else:
 		ref_hud_turn_time_counter.value = (turn_time_seconds * 100) / MAX_TURN_TIME_SECONDS;
 
+func _on_close_game_button_down() -> void:
+	get_tree().change_scene_to_packed(lobby_scene);
