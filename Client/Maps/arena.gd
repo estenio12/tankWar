@@ -18,13 +18,27 @@ signal placement_selected(global_position: Vector2);
 @onready var ref_hud_winner_name: Label = $HUD/WonScreen/VBoxContainer/WinnerName;
 @onready var ref_hud_won_screen_close_game = $HUD/WonScreen/VBoxContainer/CloseGame;
 @onready var ref_bullet: Area2D = $Bullet;
+@onready var ref_explosion: Node2D = $BulletExplosion;
+@onready var ref_camera: Camera2D = $Camera2D;
+@onready var ref_hud_bar_screen: CenterContainer = $HUD/HUDGamplay;
+@onready var ref_hud_timer_label: Label = $HUD/HUDGamplay/Label;
+@onready var ref_hud_time_manager: Timer = $HUD/HUDGamplay/TimeManager;
+@onready var ref_hud_turn_time: CenterContainer = $HUD/TurnTimer;
+@onready var ref_hud_turn_time_counter: ProgressBar = $HUD/TurnTimer/ProgressBar;
+@onready var ref_hud_turn_time_manager: Timer = $HUD/TurnTimer/TurnTimeManager;
 
 const MAX_ACTION_POINTS: int = 2;
 const MAX_ATTACK_SECTION: int = 2;
 var attack_section: int = 1;
 var power_direction: int = 10;
 var in_power_selection: bool = false;
-var is_game_end: bool = false;
+var is_game_over: bool = false;
+
+var seconds: int = 0;
+var minutes: int = 3;
+
+var MAX_TURN_TIME_SECONDS: float = 30;
+var turn_time_seconds: float = MAX_TURN_TIME_SECONDS;
 
 var action_point: int = MAX_ACTION_POINTS;
 var players: Array[CharacterBody2D] = [];
@@ -47,6 +61,9 @@ func _ready() -> void:
 	action_point = MAX_ACTION_POINTS;
 	UpdateLabelActionCount();
 
+	##### TEMPORARIO START THE GAME
+	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.START_GAME, "player": randi_range(0, 1)});
+
 func _physics_process(delta: float) -> void:
 	# Sistema para escolher a pontência do canhão.
 	if(in_power_selection):
@@ -64,8 +81,11 @@ func GetCurrentPlayer() -> CharacterBody2D:
 func UpdateLabelActionCount() -> void:
 	ref_label_action_count.text = str(action_point);
 
+func UpdateLabelTimeManager() -> void:
+	ref_hud_timer_label.text = str("%02d" % minutes) + ":" + str("%02d" % seconds);
+
 func ActionManager() -> void:
-	if(is_game_end): return;
+	if(is_game_over): return;
 	
 	DisableAllHUDs();
 
@@ -105,10 +125,32 @@ func ApplyAction() -> void:
 
 func ShowWinnerScreen(pwinner: String) -> void:
 	DisableAllHUDs();
+	ref_hud_bar_screen.visible = false;
 	ref_hud_winner_name.text = pwinner;
 	ref_hud_won_screen.visible = true;
 	await get_tree().create_timer(2).timeout;
 	ref_hud_won_screen_close_game.visible = true;
+
+func TimeIsOver() -> void:
+	ref_hud_time_manager.stop();
+	var green_player_hp: int = ref_green_player.currentHP;
+	var red_player_hp: int = ref_red_player.currentHP;
+
+	if(green_player_hp > red_player_hp):
+		_on_player_dead(EGlobalEnums.PLAYER_TYPE.RED_PLAYER);
+	elif(green_player_hp < red_player_hp):
+		_on_player_dead(EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER);
+	else:
+		_on_player_dead(EGlobalEnums.PLAYER_TYPE.BOTH);
+
+func EnableTurnTime() -> void:
+	ref_hud_turn_time_counter.value = 100;
+	turn_time_seconds = MAX_TURN_TIME_SECONDS;
+	ref_hud_turn_time_manager.start(1);
+
+func TurnTimeOver() -> void:
+	action_point = 0;
+	ApplyAction();
 
 #------------------------- DATA SERVER PROCESSING 
 
@@ -129,6 +171,7 @@ func _on_receive_data_from_server(strPacket: String) -> void:
 			await get_tree().create_timer(2).timeout;
 			current_action = EGlobalEnums.ACTION.SELECTION;
 			ActionManager();
+			EnableTurnTime();
 		EGlobalEnums.NETCODE.APPLY_MOVIMENT:
 			GetCurrentPlayer().SetPosition(packet["position"]);
 			GetCurrentPlayer().ApplyPosition();
@@ -148,17 +191,31 @@ func _on_receive_data_from_server(strPacket: String) -> void:
 			ActionManager();
 		EGlobalEnums.NETCODE.APPLY_ATTACK:
 			# print("Debug Apply Attack: ", packet);
+			ref_camera.EnableTargetInBullet(true);
 			ref_bullet.fire(packet["position"], packet["angle"], packet["power"]);
 		EGlobalEnums.NETCODE.END_GAME:
+			ref_hud_turn_time_manager.stop();
+			ref_hud_turn_time.visible = false;
+
 			var player_won = packet["player"] as EGlobalEnums.PLAYER_TYPE;
 			var winner_name: String = "Unnamed";
 			
 			if(player_won == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
 				winner_name = ref_green_player.player_name;
-			else:
+			elif(player_won == EGlobalEnums.PLAYER_TYPE.RED_PLAYER):
 				winner_name = ref_red_player.player_name;
+			else:
+				winner_name = "Empate";
 				
 			ShowWinnerScreen(winner_name);
+		EGlobalEnums.NETCODE.START_GAME:
+			ref_hud_bar_screen.visible = true;
+			ref_hud_turn_time.visible = true;
+			ref_hud_time_manager.start(1);
+			Global.ChangePlayer(packet["player"] as EGlobalEnums.PLAYER_TYPE);
+			current_action = EGlobalEnums.ACTION.SELECTION;
+			ActionManager();
+			EnableTurnTime();
 		EGlobalEnums.NETCODE.POWERUP:
 			pass
 
@@ -207,19 +264,49 @@ func _on_btn_apply_action_back_button_up() -> void:
 			GetCurrentPlayer().select_angle_active = false;
 			ActionManager();
 
-func _on_bullet_stop(isPlayer: bool) -> void:
-	if(!is_game_end):
+func _on_bullet_stop(isPlayer: bool, ppos: Vector2) -> void:
+	if(!is_game_over):
 		if(isPlayer):
 			if(Global.GetCurrentPlayer() == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
 				ref_red_player.ApplyDamage();
 			else:
 				ref_green_player.ApplyDamage();
 		
+		ref_explosion.Active(ppos);
+		ref_camera.EnableTargetInBullet(false);
 		current_action = EGlobalEnums.ACTION.SELECTION;
 		ApplyAction();
 
 func _on_player_dead(pplayer: EGlobalEnums.PLAYER_TYPE) -> void:
-	is_game_end = true;
-	var player_won = EGlobalEnums.PLAYER_TYPE.RED_PLAYER if(pplayer == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER) else EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
-	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.END_GAME, "player": player_won});
+	is_game_over = true;
+	var player_won: EGlobalEnums.PLAYER_TYPE;
+	
+	if(pplayer == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
+		player_won = EGlobalEnums.PLAYER_TYPE.RED_PLAYER;
+	elif(pplayer == EGlobalEnums.PLAYER_TYPE.RED_PLAYER):
+		player_won = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
+	else:
+		player_won = EGlobalEnums.PLAYER_TYPE.BOTH;
 		
+	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.END_GAME, "player": player_won});
+
+func _on_time_second_pass() -> void:
+	seconds = clamp(seconds - 1, 0, 59);
+
+	if(seconds <= 0 && minutes <= 0):
+		TimeIsOver();
+	elif(seconds <= 0):
+		minutes = clamp(minutes - 1, 0, 3);
+		seconds = 59;
+	
+	UpdateLabelTimeManager();
+
+func _on_turn_timer_second_pass() -> void:
+	turn_time_seconds = clamp(turn_time_seconds - 1, 0, MAX_TURN_TIME_SECONDS);
+
+	if(turn_time_seconds <= 0):
+		ref_hud_turn_time_manager.stop();
+		TurnTimeOver();
+	else:
+		ref_hud_turn_time_counter.value = (turn_time_seconds * 100) / MAX_TURN_TIME_SECONDS;
+

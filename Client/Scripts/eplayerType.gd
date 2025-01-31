@@ -5,7 +5,8 @@ class_name EGlobalEnums
 enum PLAYER_TYPE 
 { 
 	GREEN_PLAYER, 
-	RED_PLAYER
+	RED_PLAYER,
+	BOTH
 };
 
 enum ACTION
@@ -27,7 +28,8 @@ enum NETCODE
 	CHANGE_PLAYER,
 	SELECTION,
 	POWERUP,
-	END_GAME
+	END_GAME,
+	START_GAME
 }
 
 enum POWERUP

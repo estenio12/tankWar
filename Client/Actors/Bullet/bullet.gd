@@ -1,6 +1,6 @@
 extends Area2D
 
-signal BulletStop(isPlayer: bool);
+signal BulletStop(isPlayer: bool, position: Vector2);
 
 @onready var ref_green_bullet = $GreenPlayerBullet;
 @onready var ref_red_bullet   = $RedPlayerBullet;
@@ -31,7 +31,7 @@ func _physics_process(delta: float) -> void:
 
 		if(global_position.y > MAX_LIMIT_Y || global_position.x > MAX_LIMIT_X):
 			canMove = false;
-			BulletStop.emit(false)
+			BulletStop.emit(false, global_position)
 
 func fire(pposition: Vector2, pangle: float, pforce: int) -> void:
 	global_position = pposition;
@@ -58,9 +58,9 @@ func changeBulletOwnner() -> void:
 
 func _on_area_entered(area:Area2D) -> void:
 	if(area && area.is_in_group("Player")):
-		BulletStop.emit(true)
+		BulletStop.emit(true, global_position)
 	else:
-		BulletStop.emit(false)
+		BulletStop.emit(false, global_position)
 		
 	global_position = OUT_OF_BOUNDS_BULLET;
 	canMove = false;

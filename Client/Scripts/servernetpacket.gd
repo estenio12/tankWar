@@ -30,6 +30,8 @@ func _ParseStringPacket(strPacket: String) -> void:
 			_packet = {"netcode": net_code, "position": str_to_var("Vector2"+strPacketBlocks[1]) as Vector2, "angle": float(strPacketBlocks[2]), "power": int(strPacketBlocks[3])};
 		EGlobalEnums.NETCODE.END_GAME:
 			_packet = {"netcode": net_code, "player": strPacketBlocks[1]};
+		EGlobalEnums.NETCODE.START_GAME:
+			_packet = {"netcode": net_code, "player": strPacketBlocks[1]};
 		EGlobalEnums.NETCODE.POWERUP:
 			_packet = {"netcode": net_code, "powerup": strPacketBlocks[1]};
 

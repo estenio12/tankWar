@@ -50,7 +50,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"explosion",
-"speed": 10.0
+"speed": 5.0
 }]
 
 [node name="BulletExplosion" type="Node2D"]

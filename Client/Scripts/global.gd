@@ -49,6 +49,9 @@ func FakeServer(packet: Dictionary) -> void:
 		EGlobalEnums.NETCODE.END_GAME:
 			pack += str(EGlobalEnums.NETCODE.END_GAME) + "|";
 			pack += str(packet["player"]);
+		EGlobalEnums.NETCODE.START_GAME:
+			pack += str(EGlobalEnums.NETCODE.START_GAME) + "|";
+			pack += str(packet["player"]);
 
 	ReceiveDataFromServer.emit(pack);
 

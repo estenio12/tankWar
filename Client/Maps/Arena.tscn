@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=4 uid="uid://bresdy52fgn0v"]
+[gd_scene load_steps=47 format=4 uid="uid://bresdy52fgn0v"]
 
 [ext_resource type="Texture2D" uid="uid://bhrtln83ivc54" path="res://Assets/oak_woods/oak_woods_tileset.png" id="1_auuua"]
 [ext_resource type="Script" path="res://Maps/arena.gd" id="1_u7kww"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://cmtar6dmqlrtq" path="res://Actors/Bullet/Bullet.tscn" id="8_52e3h"]
 [ext_resource type="Texture2D" uid="uid://bp07ue8ck2f11" path="res://UI/UIAsset.png" id="8_lp8eg"]
 [ext_resource type="FontFile" uid="uid://clhi5tlpgwese" path="res://Assets/PixelifySans-VariableFont_wght.ttf" id="9_dm43l"]
+[ext_resource type="PackedScene" uid="uid://l3yr3emqk5gn" path="res://Actors/BulletExplosion/BulletExplosion.tscn" id="9_lojp2"]
 [ext_resource type="Script" path="res://Maps/Placement.gd" id="9_mnq3g"]
 [ext_resource type="Texture2D" uid="uid://dd1n5kqwmhg2h" path="res://UI/UIAsset2.png" id="12_km1gm"]
 
@@ -559,6 +560,20 @@ font_size = 30
 font_color = Color(1, 1, 1, 0.819608)
 shadow_color = Color(0, 0, 0, 0.729412)
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ys5ju"]
+texture = ExtResource("12_km1gm")
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 5.0
+expand_margin_bottom = 8.0
+region_rect = Rect2(705.691, 14.3996, 36.9612, 295.6)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3i2xv"]
+texture = ExtResource("12_km1gm")
+texture_margin_right = 10.0
+region_rect = Rect2(772.616, 23.7485, 20.4904, 279.415)
+modulate_color = Color(0.473475, 0.521044, 0.108536, 1)
+
 [node name="Arena" type="Node2D"]
 script = ExtResource("1_u7kww")
 
@@ -692,7 +707,7 @@ collision_mask = 2
 position = Vector2(-8, 158)
 shape = SubResource("RectangleShape2D_2n8by")
 
-[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("ref_green_player", "ref_red_player")]
+[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("ref_green_player", "ref_red_player", "ref_bullet")]
 limit_left = 0
 limit_top = -240
 limit_right = 1595
@@ -702,6 +717,7 @@ editor_draw_limits = true
 script = ExtResource("2_6ubba")
 ref_green_player = NodePath("../GreenPlayer")
 ref_red_player = NodePath("../RedPlayer")
+ref_bullet = NodePath("../Bullet")
 
 [node name="MarkerGroup" type="Node2D" parent="."]
 metadata/_edit_lock_ = true
@@ -763,6 +779,9 @@ position = Vector2(79, 86)
 [node name="RedPlayer" parent="." instance=ExtResource("2_ojrsp")]
 position = Vector2(387, 120)
 player_type = 1
+
+[node name="BulletExplosion" parent="." instance=ExtResource("9_lojp2")]
+position = Vector2(355, 214)
 
 [node name="PlacementGreenPlayer" type="SubViewportContainer" parent="."]
 visible = false
@@ -922,6 +941,7 @@ ref_marker = NodePath("../../../MarkerGroup/RP_6")
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="ChooseAction" type="CenterContainer" parent="HUD"]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -1007,9 +1027,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -64.0
-offset_top = 15.0
+offset_top = 36.0
 offset_right = 64.0
-offset_bottom = 80.0
+offset_bottom = 101.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 alignment = 1
@@ -1144,7 +1164,45 @@ label_settings = SubResource("LabelSettings_yahng")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="HUDGamplay" type="CenterContainer" parent="HUD"]
+visible = false
+custom_minimum_size = Vector2(0, 35)
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="HUD/HUDGamplay"]
+layout_mode = 2
+text = "00:00"
+
+[node name="TimeManager" type="Timer" parent="HUD/HUDGamplay"]
+
+[node name="TurnTimer" type="CenterContainer" parent="HUD"]
+visible = false
+custom_minimum_size = Vector2(0, 250)
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 11.0
+offset_top = -174.0
+offset_right = 21.0
+offset_bottom = 126.0
+grow_vertical = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="HUD/TurnTimer"]
+custom_minimum_size = Vector2(15, 250)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxTexture_ys5ju")
+theme_override_styles/fill = SubResource("StyleBoxTexture_3i2xv")
+value = 100.0
+fill_mode = 3
+show_percentage = false
+
+[node name="TurnTimeManager" type="Timer" parent="HUD/TurnTimer"]
+
 [connection signal="button_down" from="HUD/ChooseAction/VBoxContainer/HBoxContainer/MovimentAction" to="." method="_on_moviment_action_button_down"]
 [connection signal="button_down" from="HUD/ChooseAction/VBoxContainer/HBoxContainer/AttackAction" to="." method="_on_attack_action_button_down"]
 [connection signal="button_up" from="HUD/ApplyAction/BtnAccept" to="." method="_on_btn_apply_action_accept_button_up"]
 [connection signal="button_up" from="HUD/ApplyAction/BtnBack" to="." method="_on_btn_apply_action_back_button_up"]
+[connection signal="timeout" from="HUD/HUDGamplay/TimeManager" to="." method="_on_time_second_pass"]
+[connection signal="timeout" from="HUD/TurnTimer/TurnTimeManager" to="." method="_on_turn_timer_second_pass"]
