@@ -5,6 +5,8 @@ signal BulletStop(isPlayer: bool, position: Vector2, player_target: EGlobalEnums
 @onready var ref_green_bullet = $GreenPlayerBullet;
 @onready var ref_red_bullet   = $RedPlayerBullet;
 
+@export var ref_explosion: Node2D;
+
 # Somente existirá um projétil no jogo.
 var canMove: bool = false
 var angle: float = 0
@@ -13,25 +15,28 @@ var direction: Vector2 = Vector2.ZERO
 var gravidade: Vector2 = Vector2(0, 0.5)  # Gravidade em pixels/s² (ajuste conforme necessário)
 
 const MAX_LIMIT_Y: float = 350;
-const MAX_LIMIT_X: float = 1650;
+const MAX_LIMIT_X: float = 1220;
 
 const OUT_OF_BOUNDS_BULLET := Vector2(-109, 50);
 
 func _physics_process(delta: float) -> void:
+	visible = canMove;
+
 	if canMove:
-		# Atualize a direção com o efeito da gravidade
+		# Atualiza a direção com o efeito da gravidade
 		direction += gravidade * delta
 		
-		# Atualize a posição com a direção e força
+		# Atualiza a posição com a direção e força
 		position += (direction.normalized() * delta) * force;
 		
-		# Atualize o ângulo da bala para refletir sua direção atual
+		# Atualiza o ângulo da bala para refletir sua direção atual
 		angle = direction.angle()
 		rotation = angle
 
 		if(global_position.y > MAX_LIMIT_Y || global_position.x > MAX_LIMIT_X):
 			canMove = false;
-			BulletStop.emit(false, global_position, 0)
+			await get_tree().create_timer(2).timeout;
+			BulletStop.emit(false, 0)
 
 func fire(pposition: Vector2, pangle: float, pforce: int) -> void:
 	global_position = pposition;
@@ -57,10 +62,15 @@ func changeBulletOwnner() -> void:
 		direction *= -1;
 
 func _on_area_entered(area:Area2D) -> void:
-	if(area && area.is_in_group("Player")):
-		BulletStop.emit(true, global_position, area.player_type)
-	else:
-		BulletStop.emit(false, global_position, 0)
-		
-	global_position = OUT_OF_BOUNDS_BULLET;
+	ref_explosion.Active(global_position);
 	canMove = false;
+
+	await get_tree().create_timer(2).timeout;
+
+	# Aplica reset e emite para fora.
+	global_position = OUT_OF_BOUNDS_BULLET;
+	if(area && area.is_in_group("Player")):
+		BulletStop.emit(true, area.player_type)
+	else:
+		BulletStop.emit(false, 0)
+		

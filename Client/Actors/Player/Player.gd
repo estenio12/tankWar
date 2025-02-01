@@ -81,14 +81,18 @@ func LoadGreenPlayer() -> void:
 	ref_red_tank.visible   = false;
 	ref_green_tank_hp_container.visible = true;
 	ref_red_tank_hp_container.visible   = false;
-	player_name = "Green Player";
 	
 func LoadRedPlayer() -> void:
 	ref_red_tank.visible   = true;
 	ref_green_tank.visible = false;
 	ref_green_tank_hp_container.visible = false;
 	ref_red_tank_hp_container.visible   = true;
-	player_name = "Red Player";
+
+func LoadPlayerNames() -> void:
+	if(player_type == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
+		player_name = Global.nicknames[EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER];
+	else:
+		player_name = Global.nicknames[EGlobalEnums.PLAYER_TYPE.RED_PLAYER];
 
 func SetPosition(newPos: Vector2) -> void:
 	if(!recording_last_postion):

@@ -769,8 +769,9 @@ gizmo_extents = 80.0
 position = Vector2(822, 105)
 gizmo_extents = 80.0
 
-[node name="Bullet" parent="." instance=ExtResource("8_52e3h")]
+[node name="Bullet" parent="." node_paths=PackedStringArray("ref_explosion") instance=ExtResource("8_52e3h")]
 position = Vector2(-109, 50)
+ref_explosion = NodePath("../BulletExplosion")
 
 [node name="GreenPlayer" parent="." instance=ExtResource("2_ojrsp")]
 position = Vector2(79, 86)
@@ -1104,6 +1105,7 @@ label_settings = SubResource("LabelSettings_ig1r0")
 horizontal_alignment = 1
 
 [node name="WonScreen" type="CenterContainer" parent="HUD"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

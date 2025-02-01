@@ -18,7 +18,6 @@ signal placement_selected(global_position: Vector2);
 @onready var ref_hud_winner_name: Label = $HUD/WonScreen/VBoxContainer/WinnerName;
 @onready var ref_hud_won_screen_close_game = $HUD/WonScreen/VBoxContainer/CloseGame;
 @onready var ref_bullet: Area2D = $Bullet;
-@onready var ref_explosion: Node2D = $BulletExplosion;
 @onready var ref_camera: Camera2D = $Camera2D;
 @onready var ref_hud_bar_screen: CenterContainer = $HUD/HUDGamplay;
 @onready var ref_hud_timer_label: Label = $HUD/HUDGamplay/Label;
@@ -64,6 +63,8 @@ func _ready() -> void:
 	UpdateLabelActionCount();
 
 	##### TEMPORARIO START THE GAME
+	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.LOAD_GAME, "greenplayername": "P1", "redplayername": "P2", "my_tank": 1});
+	await get_tree().create_timer(5).timeout;
 	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.START_GAME, "player": randi_range(0, 1)});
 
 func _physics_process(delta: float) -> void:
@@ -76,6 +77,8 @@ func _physics_process(delta: float) -> void:
 
 		if(ref_hud_power_attack.value <= 0):
 			power_direction = 10;
+
+	ref_hud_turn_time.visible = Global.IsMyTank();
 
 func GetCurrentPlayer() -> CharacterBody2D:
 	return players[Global.GetCurrentPlayer()];
@@ -93,19 +96,22 @@ func ActionManager() -> void:
 
 	match(current_action):
 		EGlobalEnums.ACTION.MOVIMENT:
-			ref_hud_apply_action.visible = true;
-			placements[Global.GetCurrentPlayer()].visible = true;
+			if(Global.IsMyTank()):
+				ref_hud_apply_action.visible = true;
+				placements[Global.GetCurrentPlayer()].visible = true;
 		EGlobalEnums.ACTION.SELECTION:
-			UpdateLabelActionCount();
-			ref_hud_choose_action.visible = true;
+			if(Global.IsMyTank()):
+				UpdateLabelActionCount();
+				ref_hud_choose_action.visible = true;
 		EGlobalEnums.ACTION.CHANGE_PLAYER:
 			UpdateLabelActionCount();
 			ref_hud_change_player.visible = true;
 		EGlobalEnums.ACTION.ATTACK:
-			ref_hud_apply_action.visible = true;
-			if(attack_section == 2):
-				GetCurrentPlayer().select_angle_active = false;
-				ref_hud_power_attack_container.visible = true;
+			if(Global.IsMyTank()):
+				ref_hud_apply_action.visible = true;
+				if(attack_section == 2):
+					GetCurrentPlayer().select_angle_active = false;
+					ref_hud_power_attack_container.visible = true;
 				
 func DisableAllHUDs() -> void:
 	ref_hud_apply_action.visible  	   = false;
@@ -195,6 +201,7 @@ func _on_receive_data_from_server(strPacket: String) -> void:
 			# print("Debug Apply Attack: ", packet);
 			ref_camera.EnableTargetInBullet(true);
 			ref_bullet.fire(packet["position"], packet["angle"], packet["power"]);
+			ref_hud_turn_time_manager.stop();
 		EGlobalEnums.NETCODE.END_GAME:
 			ref_hud_turn_time_manager.stop();
 			ref_hud_turn_time.visible = false;
@@ -218,6 +225,10 @@ func _on_receive_data_from_server(strPacket: String) -> void:
 			current_action = EGlobalEnums.ACTION.SELECTION;
 			ActionManager();
 			EnableTurnTime();
+		EGlobalEnums.NETCODE.LOAD_GAME:
+			Global.nicknames = [packet["greenplayername"], packet["redplayername"]];
+			ref_green_player.LoadPlayerNames()
+			ref_red_player.LoadPlayerNames()
 		EGlobalEnums.NETCODE.POWERUP:
 			pass
 
@@ -266,7 +277,7 @@ func _on_btn_apply_action_back_button_up() -> void:
 			GetCurrentPlayer().select_angle_active = false;
 			ActionManager();
 
-func _on_bullet_stop(isPlayer: bool, ppos: Vector2, player_target: EGlobalEnums.PLAYER_TYPE) -> void:
+func _on_bullet_stop(isPlayer: bool, player_target: EGlobalEnums.PLAYER_TYPE) -> void:
 	if(!is_game_over):
 		if(isPlayer):
 			var current_p = Global.GetCurrentPlayer();
@@ -276,11 +287,13 @@ func _on_bullet_stop(isPlayer: bool, ppos: Vector2, player_target: EGlobalEnums.
 			if(player_target == EGlobalEnums.PLAYER_TYPE.RED_PLAYER && current_p != EGlobalEnums.PLAYER_TYPE.RED_PLAYER):
 				ref_red_player.ApplyDamage();
 		
-		ref_explosion.Active(ppos);
 		ref_camera.EnableTargetInBullet(false);
 		
 		if(action_point <= 1):
 			await get_tree().create_timer(1).timeout;
+		else:
+			ref_hud_turn_time_manager.start(1);
+
 		current_action = EGlobalEnums.ACTION.SELECTION;
 		ApplyAction();
 

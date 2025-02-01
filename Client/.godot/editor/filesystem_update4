@@ -1,3 +1,12 @@
+res://Actors/BulletExplosion/bullet_explosion.gd
+res://Actors/Player/hurt_box.gd
+res://Actors/Player/Player.gd
+res://Maps/arena.gd
+res://Actors/Bullet/bullet.gd
 res://Maps/Arena.tscn
 res://UI/lobby.tscn
-res://Maps/arena.gd
+res://Scripts/eplayerType.gd
+res://Scripts/global.gd
+res://Scripts/clientnetpacket.gd
+res://Scripts/servernetpacket.gd
+res://Maps/Camera.gd

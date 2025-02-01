@@ -3,6 +3,8 @@ extends Node
 signal ReceiveDataFromServer(packet: String);
 
 var current_player: EGlobalEnums.PLAYER_TYPE = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
+var my_tank: EGlobalEnums.PLAYER_TYPE = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
+var nicknames: Array[String] = ["GreenPlayer", "RedPlayer"]
 
 func ChangePlayer(player: EGlobalEnums.PLAYER_TYPE) -> void:
 	current_player = player;
@@ -10,8 +12,14 @@ func ChangePlayer(player: EGlobalEnums.PLAYER_TYPE) -> void:
 func GetCurrentPlayer() -> EGlobalEnums.PLAYER_TYPE:
 	return current_player;
 
+func IsMyTank() -> bool:
+	return my_tank == current_player;
+
 func SendToServer(packet: Dictionary) -> void:
 	FakeServer(packet);
+
+func LoadGame() -> void:
+	pass
 
 #region FAKE SERVER
 
@@ -52,6 +60,11 @@ func FakeServer(packet: Dictionary) -> void:
 		EGlobalEnums.NETCODE.START_GAME:
 			pack += str(EGlobalEnums.NETCODE.START_GAME) + "|";
 			pack += str(packet["player"]);
+		EGlobalEnums.NETCODE.LOAD_GAME:
+			pack += str(EGlobalEnums.NETCODE.LOAD_GAME) + "|";
+			pack += str(packet["greenplayername"]) + "|";
+			pack += str(packet["redplayername"]) + "|";
+			pack += str(packet["my_tank"]);
 
 	ReceiveDataFromServer.emit(pack);
 
