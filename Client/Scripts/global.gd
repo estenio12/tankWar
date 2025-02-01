@@ -5,6 +5,7 @@ signal ReceiveDataFromServer(packet: String);
 var current_player: EGlobalEnums.PLAYER_TYPE = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
 var my_tank: EGlobalEnums.PLAYER_TYPE = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
 var nicknames: Array[String] = ["GreenPlayer", "RedPlayer"]
+var id_match: int = 0;
 
 func ChangePlayer(player: EGlobalEnums.PLAYER_TYPE) -> void:
 	current_player = player;
