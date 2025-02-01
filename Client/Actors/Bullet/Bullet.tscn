@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://cmtar6dmqlrtq"]
+[gd_scene load_steps=9 format=3 uid="uid://cmtar6dmqlrtq"]
 
 [ext_resource type="Script" path="res://Actors/Bullet/bullet.gd" id="1_qcdem"]
 [ext_resource type="Texture2D" uid="uid://dinej5exfhevb" path="res://Actors/Player/tank.png" id="2_bo5qx"]
+[ext_resource type="AudioStream" uid="uid://c7d12j0txwdax" path="res://Audio/bullet_hit_tank.wav" id="3_0dxp3"]
+[ext_resource type="AudioStream" uid="uid://dx4vb5p56vp4w" path="res://Audio/bullet_hit_wall.wav" id="3_75dhd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nv157"]
 radius = 5.0
@@ -40,6 +42,14 @@ offset_top = -2.0
 offset_right = 1.0
 offset_bottom = 2.0
 texture = SubResource("AtlasTexture_852vu")
+
+[node name="SFX_hit_tank" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_0dxp3")
+playback_type = 1
+
+[node name="SFX_hit_wall" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_75dhd")
+playback_type = 1
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

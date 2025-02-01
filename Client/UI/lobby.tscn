@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://b2rpjwqrbgpn2"]
+[gd_scene load_steps=5 format=3 uid="uid://b2rpjwqrbgpn2"]
 
 [ext_resource type="Texture2D" uid="uid://cv2cery3n2lp6" path="res://UI/bg.png" id="1_3hn7t"]
+[ext_resource type="AudioStream" uid="uid://cnumy7hrlcsk7" path="res://Audio/Looby.wav" id="2_mpilh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mxuau"]
 bg_color = Color(0.490196, 0.658824, 0.376471, 0.501961)
@@ -65,3 +66,8 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Register/WaitContainer"]
 layout_mode = 2
 text = "Aguardando partida..."
+
+[node name="SFX_BG" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_mpilh")
+volume_db = -10.0
+autoplay = true

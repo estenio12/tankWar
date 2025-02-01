@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=4 uid="uid://bresdy52fgn0v"]
+[gd_scene load_steps=49 format=4 uid="uid://bresdy52fgn0v"]
 
 [ext_resource type="Texture2D" uid="uid://bhrtln83ivc54" path="res://Assets/oak_woods/oak_woods_tileset.png" id="1_auuua"]
 [ext_resource type="Script" path="res://Maps/arena.gd" id="1_u7kww"]
@@ -13,6 +13,8 @@
 [ext_resource type="PackedScene" uid="uid://l3yr3emqk5gn" path="res://Actors/BulletExplosion/BulletExplosion.tscn" id="9_lojp2"]
 [ext_resource type="Script" path="res://Maps/Placement.gd" id="9_mnq3g"]
 [ext_resource type="Texture2D" uid="uid://dd1n5kqwmhg2h" path="res://UI/UIAsset2.png" id="12_km1gm"]
+[ext_resource type="AudioStream" uid="uid://cylb4amggtwm2" path="res://Audio/tank_fire.wav" id="14_4lu8x"]
+[ext_resource type="AudioStream" uid="uid://dkathumh8mekd" path="res://Audio/bg_music.wav" id="15_wy606"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4v7gw"]
 texture = ExtResource("1_auuua")
@@ -1199,6 +1201,16 @@ fill_mode = 3
 show_percentage = false
 
 [node name="TurnTimeManager" type="Timer" parent="HUD/TurnTimer"]
+
+[node name="SFX_Fire" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_4lu8x")
+playback_type = 1
+
+[node name="SFX_Env" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("15_wy606")
+volume_db = -15.0
+autoplay = true
+playback_type = 1
 
 [connection signal="button_down" from="HUD/ChooseAction/VBoxContainer/HBoxContainer/MovimentAction" to="." method="_on_moviment_action_button_down"]
 [connection signal="button_down" from="HUD/ChooseAction/VBoxContainer/HBoxContainer/AttackAction" to="." method="_on_attack_action_button_down"]

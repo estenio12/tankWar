@@ -1,3 +1,5 @@
+AudioStreamPlayer
+AudioStreamPlayer2D
 Camera2D
 CenterContainer
 Label
@@ -10,6 +12,3 @@ CanvasLayer
 Timer
 ProgressBar
 Sprite2D
-AnimatedSprite2D
-TextureButton
-CollisionShape2D

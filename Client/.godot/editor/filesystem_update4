@@ -10,3 +10,6 @@ res://Scripts/global.gd
 res://Scripts/clientnetpacket.gd
 res://Scripts/servernetpacket.gd
 res://Maps/Camera.gd
+res://default_bus_layout.tres
+res://Actors/Bullet/Bullet.tscn
+res://Actors/Player/Player.tscn

@@ -25,6 +25,7 @@ signal placement_selected(global_position: Vector2);
 @onready var ref_hud_turn_time: CenterContainer = $HUD/TurnTimer;
 @onready var ref_hud_turn_time_counter: ProgressBar = $HUD/TurnTimer/ProgressBar;
 @onready var ref_hud_turn_time_manager: Timer = $HUD/TurnTimer/TurnTimeManager;
+@onready var ref_sfx_fire: AudioStreamPlayer = $SFX_Fire;
 
 @onready var lobby_scene: PackedScene = preload("res://UI/lobby.tscn");
 
@@ -201,6 +202,7 @@ func _on_receive_data_from_server(strPacket: String) -> void:
 			# print("Debug Apply Attack: ", packet);
 			ref_camera.EnableTargetInBullet(true);
 			ref_bullet.fire(packet["position"], packet["angle"], packet["power"]);
+			ref_sfx_fire.play();
 			ref_hud_turn_time_manager.stop();
 		EGlobalEnums.NETCODE.END_GAME:
 			ref_hud_turn_time_manager.stop();

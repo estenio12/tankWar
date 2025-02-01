@@ -4,6 +4,8 @@ signal BulletStop(isPlayer: bool, position: Vector2, player_target: EGlobalEnums
 
 @onready var ref_green_bullet = $GreenPlayerBullet;
 @onready var ref_red_bullet   = $RedPlayerBullet;
+@onready var ref_sfx_hit_tank: AudioStreamPlayer = $SFX_hit_tank;
+@onready var ref_sfx_hit_wall: AudioStreamPlayer = $SFX_hit_wall;
 
 @export var ref_explosion: Node2D;
 
@@ -64,6 +66,11 @@ func changeBulletOwnner() -> void:
 func _on_area_entered(area:Area2D) -> void:
 	ref_explosion.Active(global_position);
 	canMove = false;
+
+	if(area && area.is_in_group("Player")):
+		ref_sfx_hit_tank.play()
+	else:
+		ref_sfx_hit_wall.play()
 
 	await get_tree().create_timer(2).timeout;
 
