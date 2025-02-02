@@ -2,6 +2,9 @@ extends Node
 
 signal ReceiveDataFromServer(packet: Dictionary);
 
+@onready var battle_scene = preload("res://Maps/Arena.tscn");
+@onready var lobby_scene: PackedScene = preload("res://UI/lobby.tscn");
+
 var last_name_picked: String = "unnamed";
 
 var current_player: EGlobalEnums.PLAYER_TYPE = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;

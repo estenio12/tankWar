@@ -29,8 +29,6 @@ signal placement_selected(global_position: Vector2);
 @onready var ref_loadscreen: Control = $HUD/LoadScreen;
 @onready var ref_sfx_env: AudioStreamPlayer = $SFX_Env;
 
-@onready var lobby_scene: PackedScene = preload("res://UI/lobby.tscn");
-
 const MAX_ACTION_POINTS: int = 2;
 const MAX_ATTACK_SECTION: int = 2;
 var attack_section: int = 1;
@@ -349,6 +347,4 @@ func _on_turn_timer_second_pass() -> void:
 		ref_hud_turn_time_counter.value = (turn_time_seconds * 100) / MAX_TURN_TIME_SECONDS;
 
 func _on_close_game_button_down() -> void:
-	var lobby_instance = lobby_scene.instantiate()
-	print(lobby_instance);
-	get_tree().change_scene_to_packed(lobby_instance);
+	get_tree().change_scene_to_packed(Global.lobby_scene);

@@ -5,8 +5,6 @@ extends CanvasLayer
 @onready var ref_form 	 = $Register/Form;
 @onready var ref_input   = $Register/Form/nickname;
 
-@onready var battle_scene = preload("res://Maps/Arena.tscn");
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	ref_setting.closeSetting.connect(Callable(self, "_on_close_setting"));
@@ -46,4 +44,4 @@ func _on_server_confirm_queue(packet: Dictionary) -> void:
 
 	if(packet["netcode"] == EGlobalEnums.NETCODE.LOAD_GAME):
 		Global.LoadPlayers(packet["idmatch"], packet["greenplayername"], packet["redplayername"], packet["my_tank"]);
-		get_tree().change_scene_to_packed(battle_scene);
+		get_tree().change_scene_to_packed(Global.battle_scene);
