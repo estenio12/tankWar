@@ -68,16 +68,17 @@ func _on_area_entered(area:Area2D) -> void:
 	canMove = false;
 
 	if(area && area.is_in_group("Player")):
-		ref_sfx_hit_tank.play()
+		ref_sfx_hit_tank.play();
 	else:
-		ref_sfx_hit_wall.play()
+		ref_sfx_hit_wall.play();
+
+	# Aplica reset e emite para fora.
+	if(area && area.is_in_group("Player")):
+		BulletStop.emit(true, area.player_type);
+	else:
+		BulletStop.emit(false, 0);
 
 	await get_tree().create_timer(2).timeout;
 
-	# Aplica reset e emite para fora.
 	global_position = OUT_OF_BOUNDS_BULLET;
-	if(area && area.is_in_group("Player")):
-		BulletStop.emit(true, area.player_type)
-	else:
-		BulletStop.emit(false, 0)
 		

@@ -5,3 +5,7 @@ res://Maps/arena.gd
 res://UI/lobby.tscn
 res://Actors/Player/Player.tscn
 res://Actors/Bullet/Bullet.tscn
+res://Scripts/global.gd
+res://Actors/Player/Player.gd
+res://Actors/Bullet/bullet.gd
+res://Scripts/eplayerType.gd

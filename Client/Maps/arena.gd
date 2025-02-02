@@ -37,6 +37,8 @@ var attack_section: int = 1;
 var power_direction: int = 10;
 var in_power_selection: bool = false;
 var is_game_over: bool = false;
+var winner_name: String = "Unnamed";
+var is_player_change: bool = false;
 
 var seconds: int = 0;
 var minutes: int = 3;
@@ -94,7 +96,9 @@ func UpdateLabelTimeManager() -> void:
 	ref_hud_timer_label.text = str("%02d" % minutes) + ":" + str("%02d" % seconds);
 
 func ActionManager() -> void:
-	if(is_game_over): return;
+	if(is_game_over):
+		ShowWinnerScreen();
+		return;
 	
 	DisableAllHUDs();
 
@@ -108,6 +112,7 @@ func ActionManager() -> void:
 				UpdateLabelActionCount();
 				ref_hud_choose_action.visible = true;
 		EGlobalEnums.ACTION.CHANGE_PLAYER:
+			action_point = MAX_ACTION_POINTS;
 			UpdateLabelActionCount();
 			ref_hud_change_player.visible = true;
 		EGlobalEnums.ACTION.ATTACK:
@@ -127,21 +132,24 @@ func DisableAllHUDs() -> void:
 	ref_hud_power_attack_container.visible = false;
 
 func ApplyAction() -> void:
-	action_point = max(0, action_point - 1);
+	action_point = clamp(action_point - 1, 0, MAX_ACTION_POINTS);
 
+func CheckActionPointCount() -> void:
 	if(action_point <= 0):
+		action_point = MAX_ACTION_POINTS;
 		Global.SendToServer({"netcode": EGlobalEnums.NETCODE.CHANGE_PLAYER, "current_player": Global.GetCurrentPlayer()});
 
 	UpdateLabelActionCount();
 	ActionManager();
 
-func ShowWinnerScreen(pwinner: String) -> void:
+func ShowWinnerScreen() -> void:
 	DisableAllHUDs();
 	ref_hud_bar_screen.visible = false;
-	ref_hud_winner_name.text = pwinner;
+	ref_hud_winner_name.text = winner_name;
 	ref_hud_won_screen.visible = true;
 	await get_tree().create_timer(2).timeout;
 	ref_hud_won_screen_close_game.visible = true;
+	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.CLOSE_GAME, "PID": Global.my_tank});
 
 func TimeIsOver() -> void:
 	ref_hud_time_manager.stop();
@@ -162,7 +170,7 @@ func EnableTurnTime() -> void:
 
 func TurnTimeOver() -> void:
 	action_point = 0;
-	ApplyAction();
+	CheckActionPointCount();
 
 #------------------------- DATA SERVER PROCESSING 
 
@@ -183,11 +191,13 @@ func _on_receive_data_from_server(packet: Dictionary) -> void:
 			current_action = EGlobalEnums.ACTION.SELECTION;
 			ActionManager();
 			EnableTurnTime();
+			is_player_change = true;
 		EGlobalEnums.NETCODE.APPLY_MOVIMENT:
 			GetCurrentPlayer().SetPosition(packet["position"]);
 			GetCurrentPlayer().ApplyPosition();
 			current_action = EGlobalEnums.ACTION.SELECTION;
 			ApplyAction();
+			CheckActionPointCount();
 		EGlobalEnums.NETCODE.RESET_MOVIMENT:
 			GetCurrentPlayer().ResetPosition();
 			current_action = EGlobalEnums.ACTION.SELECTION;
@@ -203,15 +213,17 @@ func _on_receive_data_from_server(packet: Dictionary) -> void:
 		EGlobalEnums.NETCODE.APPLY_ATTACK:
 			# print("Debug Apply Attack: ", packet);
 			ref_camera.EnableTargetInBullet(true);
+			GetCurrentPlayer().select_angle_active = false;
+			GetCurrentPlayer().SetCannonRotation(packet["angle"]);
 			ref_bullet.fire(packet["position"], packet["angle"], packet["power"]);
 			ref_sfx_fire.play();
 			ref_hud_turn_time_manager.stop();
+			ApplyAction();
 		EGlobalEnums.NETCODE.END_GAME:
 			ref_hud_turn_time_manager.stop();
 			ref_hud_turn_time.visible = false;
 
 			var player_won = packet["player"] as EGlobalEnums.PLAYER_TYPE;
-			var winner_name: String = "Unnamed";
 			
 			if(player_won == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
 				winner_name = ref_green_player.player_name;
@@ -220,7 +232,7 @@ func _on_receive_data_from_server(packet: Dictionary) -> void:
 			else:
 				winner_name = "Empate";
 				
-			ShowWinnerScreen(winner_name);
+			ShowWinnerScreen();
 		EGlobalEnums.NETCODE.START_GAME:
 			ref_hud_bar_screen.visible = true;
 			ref_hud_turn_time.visible = true;
@@ -242,7 +254,6 @@ func _on_moviment_action_button_down() -> void:
 
 func _on_attack_action_button_down() -> void:
 	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.ATTACK});
-	# current_action = EGlobalEnums.ACTION.WAIT_SERVER;
 	ActionManager();
 
 func _on_placement_selected(new_place: Vector2) -> void:
@@ -289,6 +300,8 @@ func _on_bullet_stop(isPlayer: bool, player_target: EGlobalEnums.PLAYER_TYPE) ->
 			if(player_target == EGlobalEnums.PLAYER_TYPE.RED_PLAYER && current_p != EGlobalEnums.PLAYER_TYPE.RED_PLAYER):
 				ref_red_player.ApplyDamage();
 		
+		# Tempo para voltar o target da câmera para os jogadores.
+		await get_tree().create_timer(2).timeout;
 		ref_camera.EnableTargetInBullet(false);
 		
 		if(action_point <= 1):
@@ -297,7 +310,8 @@ func _on_bullet_stop(isPlayer: bool, player_target: EGlobalEnums.PLAYER_TYPE) ->
 			ref_hud_turn_time_manager.start(1);
 
 		current_action = EGlobalEnums.ACTION.SELECTION;
-		ApplyAction();
+		ActionManager();
+		CheckActionPointCount();
 
 func _on_player_dead(pplayer: EGlobalEnums.PLAYER_TYPE) -> void:
 	is_game_over = true;

@@ -138,3 +138,10 @@ func ApplyDamage() -> void:
 
 	if(percent <= 0):
 		PlayerDead.emit(player_type);
+
+func SetCannonRotation(angle: float) -> void:
+	if(player_type == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
+		ref_green_tank_cannon.rotation_degrees = angle;
+	else:
+		ref_red_tank_cannon.rotation_degrees = angle;
+

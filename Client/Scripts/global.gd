@@ -67,6 +67,7 @@ func IsMyTank() -> bool:
 
 func SendToServer(packet: Dictionary) -> void:
 	var package = ConvertToServerPackege(packet);
+	print("Vou enviar para o server: ", package);
 	socket.send_text(package);
 
 func ConvertToServerPackege(packet: Dictionary) -> String:

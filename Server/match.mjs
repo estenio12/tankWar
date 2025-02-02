@@ -34,14 +34,6 @@ export class Match
         const chunks = msgPackage.toString().split("|");
         const netcode = Number(chunks[0]);
 
-        // # Troca o turno dos jogadores.
-        if(netcode == 4)
-        {
-            let IDPlayer = Number(chunks[1]);
-            IDPlayer = IDPlayer == 1 ? 0 : 1;
-            msgPackage = chunks[0] + "|" + IDPlayer.toString();
-        }
-
         // # Espera a confirmação de todos para iniciar a partida.
         if(netcode == 12)
         {
@@ -57,15 +49,21 @@ export class Match
             }
         }
 
+        // # Espera a confirmação de todos para fechar a partida.
+        if(netcode == 16)
+        {
+            let IDPlayer = Number(chunks[1]);
+            this.Players[IDPlayer].IsReady = true;
+
+            if(this.Players[0].isCloseGame && this.Players[1].isCloseGame)
+            {
+                this.Players.forEach(e => { e.con.close(); e.con = null; });
+                this.GameIsRunning = false;
+            }
+        }
+
         // # Repassa os pacotes para os jogadores.
         this.SendPacket(msgPackage);
-
-        // # Acabou a partida.
-        if(netcode == 8)
-        {
-            this.Players.forEach(e => { e.con.close(); e.con = null; });
-            this.GameIsRunning = false;
-        }
     }
 
     SendPacket(pack)

@@ -21,7 +21,7 @@ wss.on('connection', (ws) =>
         // # Netcode: 11 => Registrar.
         if(netcode == 11)
         {
-            matchmaking.AddPlayerToQueue({"nickname": chunks[1], "con": ws, "IsReady": false});
+            matchmaking.AddPlayerToQueue({"nickname": chunks[1], "con": ws, "IsReady": false, "isCloseGame": false});
             console.log(`Jogodor '${chunks[1]}' entrou na fila de espera.`);
             ws.send("15");
         }
