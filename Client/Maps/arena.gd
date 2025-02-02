@@ -82,7 +82,7 @@ func _physics_process(delta: float) -> void:
 		if(ref_hud_power_attack.value <= 0):
 			power_direction = 10;
 
-	ref_hud_turn_time.visible = Global.IsMyTank();
+	ref_hud_turn_time.visible = Global.IsMyTank() && !is_game_over;
 
 func GetCurrentPlayer() -> CharacterBody2D:
 	return players[Global.GetCurrentPlayer()];
@@ -175,7 +175,6 @@ func TurnTimeOver() -> void:
 #------------------------- DATA SERVER PROCESSING 
 
 func _on_receive_data_from_server(packet: Dictionary) -> void:
-
 	match(packet["netcode"] as EGlobalEnums.NETCODE):
 		EGlobalEnums.NETCODE.SELECTION:
 			current_action = EGlobalEnums.ACTION.SELECTION;
@@ -187,7 +186,8 @@ func _on_receive_data_from_server(packet: Dictionary) -> void:
 			current_action = EGlobalEnums.ACTION.CHANGE_PLAYER;
 			ref_hud_player_name.text = GetCurrentPlayer().player_name;
 			ActionManager();
-			await get_tree().create_timer(2).timeout;
+			if(!Global.IsMyTank()):
+				await get_tree().create_timer(2).timeout;
 			current_action = EGlobalEnums.ACTION.SELECTION;
 			ActionManager();
 			EnableTurnTime();
@@ -327,24 +327,26 @@ func _on_player_dead(pplayer: EGlobalEnums.PLAYER_TYPE) -> void:
 	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.END_GAME, "player": player_won});
 
 func _on_time_second_pass() -> void:
-	seconds = clamp(seconds - 1, 0, 59);
+	if(!is_game_over):
+		seconds = clamp(seconds - 1, 0, 59);
 
-	if(seconds <= 0 && minutes <= 0):
-		TimeIsOver();
-	elif(seconds <= 0):
-		minutes = clamp(minutes - 1, 0, 3);
-		seconds = 59;
-	
-	UpdateLabelTimeManager();
+		if(seconds <= 0 && minutes <= 0):
+			TimeIsOver();
+		elif(seconds <= 0):
+			minutes = clamp(minutes - 1, 0, 3);
+			seconds = 59;
+		
+		UpdateLabelTimeManager();
 
 func _on_turn_timer_second_pass() -> void:
-	turn_time_seconds = clamp(turn_time_seconds - 1, 0, MAX_TURN_TIME_SECONDS);
+	if(!is_game_over):
+		turn_time_seconds = clamp(turn_time_seconds - 1, 0, MAX_TURN_TIME_SECONDS);
 
-	if(turn_time_seconds <= 0):
-		ref_hud_turn_time_manager.stop();
-		TurnTimeOver();
-	else:
-		ref_hud_turn_time_counter.value = (turn_time_seconds * 100) / MAX_TURN_TIME_SECONDS;
+		if(turn_time_seconds <= 0):
+			ref_hud_turn_time_manager.stop();
+			TurnTimeOver();
+		else:
+			ref_hud_turn_time_counter.value = (turn_time_seconds * 100) / MAX_TURN_TIME_SECONDS;
 
 func _on_close_game_button_down() -> void:
 	get_tree().change_scene_to_packed(Global.lobby_scene);
