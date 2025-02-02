@@ -9,3 +9,4 @@ res://Scripts/global.gd
 res://Actors/Player/Player.gd
 res://Actors/Bullet/bullet.gd
 res://Scripts/eplayerType.gd
+res://Scripts/servernetpacket.gd

@@ -41,7 +41,7 @@ var winner_name: String = "Unnamed";
 var is_player_change: bool = false;
 
 var seconds: int = 0;
-var minutes: int = 3;
+var minutes: int = 1;
 
 var MAX_TURN_TIME_SECONDS: float = 30;
 var turn_time_seconds: float = MAX_TURN_TIME_SECONDS;
@@ -145,6 +145,8 @@ func CheckActionPointCount() -> void:
 func ShowWinnerScreen() -> void:
 	DisableAllHUDs();
 	ref_hud_bar_screen.visible = false;
+	ref_hud_turn_time.visible = false;
+	ref_hud_turn_time_manager.stop();
 	ref_hud_winner_name.text = winner_name;
 	ref_hud_won_screen.visible = true;
 	await get_tree().create_timer(2).timeout;
@@ -347,4 +349,6 @@ func _on_turn_timer_second_pass() -> void:
 		ref_hud_turn_time_counter.value = (turn_time_seconds * 100) / MAX_TURN_TIME_SECONDS;
 
 func _on_close_game_button_down() -> void:
-	get_tree().change_scene_to_packed(lobby_scene);
+	var lobby_instance = lobby_scene.instantiate()
+	print(lobby_instance);
+	get_tree().change_scene_to_packed(lobby_instance);

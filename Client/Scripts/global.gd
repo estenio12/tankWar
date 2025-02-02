@@ -67,8 +67,8 @@ func IsMyTank() -> bool:
 
 func SendToServer(packet: Dictionary) -> void:
 	var package = ConvertToServerPackege(packet);
-	print("Vou enviar para o server: ", package);
-	socket.send_text(package);
+	if(IsValidPackage(package)):
+		socket.send_text(package);
 
 func ConvertToServerPackege(packet: Dictionary) -> String:
 	var pack: String = "";
@@ -118,4 +118,11 @@ func ConvertToServerPackege(packet: Dictionary) -> String:
 			pack += str(packet["PID"]);
 
 	return pack + "|" + str(id_match);
+
+func IsValidPackage(package: String) -> bool:
+	if(socket.get_ready_state() == WebSocketPeer.STATE_OPEN):
+		if(package.length() > 0 && package[0] != '|'):
+			return true;
+
+	return false;
 

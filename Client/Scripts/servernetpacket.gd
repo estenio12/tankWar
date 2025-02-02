@@ -11,7 +11,7 @@ func _ParseStringPacket(strPacket: String) -> void:
 	var strPacketBlocks: PackedStringArray = strPacket.split('|');
 	var net_code = int(strPacketBlocks[0]) as EGlobalEnums.NETCODE;
 
-	print("Parser: ", strPacket);
+	# print("Parser: ", strPacket);
 
 	match(net_code):
 		EGlobalEnums.NETCODE.MOVIMENT:
