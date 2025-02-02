@@ -1,11 +1,60 @@
 extends Node
 
-signal ReceiveDataFromServer(packet: String);
+signal ReceiveDataFromServer(packet: Dictionary);
+
+var last_name_picked: String = "unnamed";
 
 var current_player: EGlobalEnums.PLAYER_TYPE = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
 var my_tank: EGlobalEnums.PLAYER_TYPE = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
 var nicknames: Array[String] = ["GreenPlayer", "RedPlayer"]
 var id_match: int = 0;
+
+# Dados de conexão
+
+var ServerIP: String = "192.168.15.8";
+var ServerPORT: int = 7080;
+
+var socket = WebSocketPeer.new()
+
+func _ready() -> void:
+	CreateConnection();
+
+func _process(_delta: float) -> void:
+	socket.poll()
+	var state = socket.get_ready_state()
+
+	if state == WebSocketPeer.STATE_OPEN:
+		while socket.get_available_packet_count():
+			var strPacket = socket.get_packet().get_string_from_utf8();
+			ReceiveDataFromServer.emit(ServerNetPacket.new(strPacket).GetPacket());
+	elif state == WebSocketPeer.STATE_CLOSING:
+		# Keep polling to achieve proper close.
+		pass
+	elif state == WebSocketPeer.STATE_CLOSED:
+		var code = socket.get_close_code()
+		var reason = socket.get_close_reason()
+		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
+		set_process(false) # Stop processing.
+
+func UpdateConection(pIP: String, pPORT: int) -> void:
+	ServerIP   = pIP;
+	ServerPORT = pPORT
+	socket.close();
+	CreateConnection();
+
+func RetryConnection() -> void:
+	CreateConnection();
+
+func CreateConnection() -> void:
+	socket.connect_to_url(BuildURL());
+
+func BuildURL() -> String:
+	return "ws://%s:%d" % [ServerIP, ServerPORT];
+
+func LoadPlayers(pid_match: int, p1_nickname: String, p2_nickname: String, pmy_tank: EGlobalEnums.PLAYER_TYPE) -> void:
+	id_match  = pid_match;
+	my_tank   = pmy_tank;
+	nicknames = [p1_nickname, p2_nickname];
 
 func ChangePlayer(player: EGlobalEnums.PLAYER_TYPE) -> void:
 	current_player = player;
@@ -17,17 +66,11 @@ func IsMyTank() -> bool:
 	return my_tank == current_player;
 
 func SendToServer(packet: Dictionary) -> void:
-	FakeServer(packet);
+	var package = ConvertToServerPackege(packet);
+	socket.send_text(package);
 
-func LoadGame() -> void:
-	pass
-
-#region FAKE SERVER
-
-func FakeServer(packet: Dictionary) -> void:
+func ConvertToServerPackege(packet: Dictionary) -> String:
 	var pack: String = "";
-
-	# print("Debug Packet: ", packet);
 
 	match(packet["netcode"] as EGlobalEnums.NETCODE):
 		EGlobalEnums.NETCODE.MOVIMENT:
@@ -66,7 +109,12 @@ func FakeServer(packet: Dictionary) -> void:
 			pack += str(packet["greenplayername"]) + "|";
 			pack += str(packet["redplayername"]) + "|";
 			pack += str(packet["my_tank"]);
+		EGlobalEnums.NETCODE.REGISTER:
+			pack += str(EGlobalEnums.NETCODE.REGISTER) + "|";
+			pack += str(packet["nickname"]);
+		EGlobalEnums.NETCODE.READY:
+			pack += str(EGlobalEnums.NETCODE.READY) + "|";
+			pack += str(packet["PID"]);
 
-	ReceiveDataFromServer.emit(pack);
+	return pack + "|" + str(id_match);
 
-#endregion

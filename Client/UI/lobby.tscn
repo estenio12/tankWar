@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://b2rpjwqrbgpn2"]
+[gd_scene load_steps=7 format=3 uid="uid://b2rpjwqrbgpn2"]
 
 [ext_resource type="Texture2D" uid="uid://cv2cery3n2lp6" path="res://UI/bg.png" id="1_3hn7t"]
+[ext_resource type="Script" path="res://UI/lobby.gd" id="1_io1xh"]
 [ext_resource type="AudioStream" uid="uid://cnumy7hrlcsk7" path="res://Audio/Looby.wav" id="2_mpilh"]
+[ext_resource type="Script" path="res://UI/setting.gd" id="3_mgps8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mxuau"]
 bg_color = Color(0.490196, 0.658824, 0.376471, 0.501961)
@@ -18,6 +20,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="Control" type="CanvasLayer"]
+script = ExtResource("1_io1xh")
 
 [node name="Register" type="CenterContainer" parent="."]
 anchors_preset = 15
@@ -48,16 +51,20 @@ theme_override_constants/separation = 15
 layout_mode = 2
 text = "Digite seu nickname:"
 
-[node name="LineEdit" type="LineEdit" parent="Register/Form"]
+[node name="nickname" type="LineEdit" parent="Register/Form"]
 layout_mode = 2
 alignment = 1
 max_length = 16
 
-[node name="Button" type="Button" parent="Register/Form"]
+[node name="FindMatch" type="Button" parent="Register/Form"]
 layout_mode = 2
 theme_override_styles/hover = SubResource("StyleBoxFlat_mxuau")
 theme_override_styles/normal = SubResource("StyleBoxFlat_fwul6")
 text = "Entrar"
+
+[node name="Setting" type="Button" parent="Register/Form"]
+layout_mode = 2
+text = "Configurações"
 
 [node name="WaitContainer" type="CenterContainer" parent="Register"]
 visible = false
@@ -67,7 +74,48 @@ layout_mode = 2
 layout_mode = 2
 text = "Aguardando partida..."
 
+[node name="Setting" type="CenterContainer" parent="Register"]
+visible = false
+layout_mode = 2
+script = ExtResource("3_mgps8")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Register/Setting"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="Register/Setting/VBoxContainer"]
+layout_mode = 2
+text = "Configuração de conexão"
+horizontal_alignment = 1
+
+[node name="Label3" type="Label" parent="Register/Setting/VBoxContainer"]
+layout_mode = 2
+text = "IP:"
+
+[node name="INP_IP" type="LineEdit" parent="Register/Setting/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Register/Setting/VBoxContainer"]
+layout_mode = 2
+text = "Porta"
+
+[node name="INP_PORT" type="LineEdit" parent="Register/Setting/VBoxContainer"]
+layout_mode = 2
+
+[node name="Apply" type="Button" parent="Register/Setting/VBoxContainer"]
+layout_mode = 2
+text = "Confirmar"
+
+[node name="Cancelar" type="Button" parent="Register/Setting/VBoxContainer"]
+layout_mode = 2
+text = "Cancelar"
+
 [node name="SFX_BG" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_mpilh")
 volume_db = -10.0
 autoplay = true
+
+[connection signal="button_down" from="Register/Form/FindMatch" to="." method="_on_find_match_button_down"]
+[connection signal="button_down" from="Register/Form/Setting" to="." method="_on_setting_button_down"]
+[connection signal="button_down" from="Register/Setting/VBoxContainer/Apply" to="Register/Setting" method="_on_apply_button_down"]

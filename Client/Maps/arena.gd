@@ -26,6 +26,8 @@ signal placement_selected(global_position: Vector2);
 @onready var ref_hud_turn_time_counter: ProgressBar = $HUD/TurnTimer/ProgressBar;
 @onready var ref_hud_turn_time_manager: Timer = $HUD/TurnTimer/TurnTimeManager;
 @onready var ref_sfx_fire: AudioStreamPlayer = $SFX_Fire;
+@onready var ref_loadscreen: Control = $HUD/LoadScreen;
+@onready var ref_sfx_env: AudioStreamPlayer = $SFX_Env;
 
 @onready var lobby_scene: PackedScene = preload("res://UI/lobby.tscn");
 
@@ -56,6 +58,9 @@ func _ready() -> void:
 	self.ref_green_player.PlayerDead.connect(Callable(self, "_on_player_dead"));
 	self.ref_red_player.PlayerDead.connect(Callable(self, "_on_player_dead"));
 
+	ref_green_player.LoadPlayerNames();
+	ref_red_player.LoadPlayerNames();
+
 	self.players = [ref_green_player, ref_red_player];
 	self.placements = [ref_placement_green_player, ref_placement_red_player];
 	
@@ -63,10 +68,8 @@ func _ready() -> void:
 	action_point = MAX_ACTION_POINTS;
 	UpdateLabelActionCount();
 
-	##### TEMPORARIO START THE GAME
-	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.LOAD_GAME, "greenplayername": "P1", "redplayername": "P2", "my_tank": 1});
-	await get_tree().create_timer(5).timeout;
-	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.START_GAME, "player": randi_range(0, 1)});
+	# Notifica o servidor de que está tudo carregado. 
+	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.READY, "PID": Global.my_tank}); 
 
 func _physics_process(delta: float) -> void:
 	# Sistema para escolher a pontência do canhão.
@@ -163,8 +166,7 @@ func TurnTimeOver() -> void:
 
 #------------------------- DATA SERVER PROCESSING 
 
-func _on_receive_data_from_server(strPacket: String) -> void:
-	var packet = ServerNetPacket.new(strPacket).GetPacket();
+func _on_receive_data_from_server(packet: Dictionary) -> void:
 
 	match(packet["netcode"] as EGlobalEnums.NETCODE):
 		EGlobalEnums.NETCODE.SELECTION:
@@ -227,10 +229,8 @@ func _on_receive_data_from_server(strPacket: String) -> void:
 			current_action = EGlobalEnums.ACTION.SELECTION;
 			ActionManager();
 			EnableTurnTime();
-		EGlobalEnums.NETCODE.LOAD_GAME:
-			Global.nicknames = [packet["greenplayername"], packet["redplayername"]];
-			ref_green_player.LoadPlayerNames()
-			ref_red_player.LoadPlayerNames()
+			ref_loadscreen.visible = false;
+			ref_sfx_env.play();
 		EGlobalEnums.NETCODE.POWERUP:
 			pass
 

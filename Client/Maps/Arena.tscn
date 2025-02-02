@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=4 uid="uid://bresdy52fgn0v"]
+[gd_scene load_steps=50 format=4 uid="uid://bresdy52fgn0v"]
 
 [ext_resource type="Texture2D" uid="uid://bhrtln83ivc54" path="res://Assets/oak_woods/oak_woods_tileset.png" id="1_auuua"]
 [ext_resource type="Script" path="res://Maps/arena.gd" id="1_u7kww"]
@@ -575,6 +575,9 @@ texture = ExtResource("12_km1gm")
 texture_margin_right = 10.0
 region_rect = Rect2(772.616, 23.7485, 20.4904, 279.415)
 modulate_color = Color(0.473475, 0.521044, 0.108536, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_bbd2w"]
+font_size = 50
 
 [node name="Arena" type="Node2D"]
 script = ExtResource("1_u7kww")
@@ -1202,6 +1205,44 @@ show_percentage = false
 
 [node name="TurnTimeManager" type="Timer" parent="HUD/TurnTimer"]
 
+[node name="LoadScreen" type="Control" parent="HUD"]
+z_index = 10
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="BG" type="ColorRect" parent="HUD/LoadScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="HUD/LoadScreen"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -52.0
+offset_top = -11.5
+offset_right = 52.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Carregando..."
+label_settings = SubResource("LabelSettings_bbd2w")
+metadata/_edit_use_anchors_ = true
+
 [node name="SFX_Fire" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("14_4lu8x")
 playback_type = 1
@@ -1209,7 +1250,6 @@ playback_type = 1
 [node name="SFX_Env" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("15_wy606")
 volume_db = -15.0
-autoplay = true
 playback_type = 1
 
 [connection signal="button_down" from="HUD/ChooseAction/VBoxContainer/HBoxContainer/MovimentAction" to="." method="_on_moviment_action_button_down"]

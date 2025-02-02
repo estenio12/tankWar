@@ -34,6 +34,10 @@ func _ParseStringPacket(strPacket: String) -> void:
 			_packet = {"netcode": net_code, "player": strPacketBlocks[1]};
 		EGlobalEnums.NETCODE.LOAD_GAME:
 			_packet = {"netcode": net_code, "idmatch": int(strPacketBlocks[1]), "greenplayername": strPacketBlocks[2], "redplayername": strPacketBlocks[3], "my_tank": int(strPacketBlocks[4]) as EGlobalEnums.PLAYER_TYPE};
+		EGlobalEnums.NETCODE.WAIT_MATCH:
+			_packet = {"netcode": net_code};
+		EGlobalEnums.NETCODE.READY:
+			_packet = {"netcode": net_code};
 		EGlobalEnums.NETCODE.POWERUP:
 			_packet = {"netcode": net_code, "powerup": strPacketBlocks[1]};
 
