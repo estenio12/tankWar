@@ -75,6 +75,8 @@ func SendToServer(packet: Dictionary) -> void:
 
 func ConvertToServerPackege(packet: Dictionary) -> String:
 	var pack: String = "";
+	
+	#print("Debug pack: ", packet);
 
 	match(packet["netcode"] as EGlobalEnums.NETCODE):
 		EGlobalEnums.NETCODE.MOVIMENT:
@@ -94,7 +96,9 @@ func ConvertToServerPackege(packet: Dictionary) -> String:
 				playerID = 0;
 
 			pack += str(EGlobalEnums.NETCODE.CHANGE_PLAYER) + "|";
-			pack += str(playerID);
+			pack += str(playerID) + "|";
+			pack += str(packet["state_p1"]) + "|";
+			pack += str(packet["state_p2"]);
 		EGlobalEnums.NETCODE.ATTACK:
 			pack += str(EGlobalEnums.NETCODE.ATTACK);
 		EGlobalEnums.NETCODE.APPLY_ATTACK:
@@ -128,4 +132,3 @@ func IsValidPackage(package: String) -> bool:
 			return true;
 
 	return false;
-

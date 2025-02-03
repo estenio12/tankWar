@@ -3,6 +3,8 @@ export class Match
     ID = 0;
     GameIsRunning = true;
     Players = [];
+    Current_turn = 0;
+    ID_spectator_count = 0;
 
     constructor(initData)
     {
@@ -17,6 +19,12 @@ export class Match
         let my_tank_p1  = Math.floor(Math.random() * 2);
         let my_tank_p2  = my_tank_p1 == 1 ? 0 : 1;
 
+        // # Carrega stats dos jogadores.
+        this.Players[0].HP = 5;
+        this.Players[0].position = "(0, 0)";
+        this.Players[1].HP = 5;
+        this.Players[1].position = "(0, 0)";
+
         // # Monta pacote base.
         let base_pack = `10|${this.ID}|${this.Players[0].nickname}|${this.Players[1].nickname}|`;
         
@@ -27,6 +35,19 @@ export class Match
         // # Envia o pacote de carregamento para cada jogador.
         this.Players[0].con.send(PID1_Packet);
         this.Players[1].con.send(PID2_Packet);
+    }
+
+    AssignSpectator(con)
+    {
+        const idSpectator = ++ID_spectator_count;
+        this.Players.push({"idSpectator": idSpectator, "con": con});
+        let current_game_state = `18|${idSpectator}|${this.Current_turn}`;
+        this.Players.forEach( e => { current_game_state += `|${e.nickname}-${e.HP}-${e.position}`; } );
+    }
+
+    RemoveSpectator(idSpectator)
+    {
+        this.Players = this.Players.filter(e => e.idSpectator != idSpectator);
     }
 
     PushMessage(msgPackage)
@@ -62,12 +83,31 @@ export class Match
             }
         }
 
+        // # Muda o turno e sincroniza os dados.
+        if(netcode == 5)
+        {
+            // # Armazena o turno do jogador atual.
+            this.Current_turn = chunks[1];
+
+            // # Obtém o estado da partida.
+            const STATE_P1 = chunks[2].split('-');
+            const STATE_P2 = chunks[3].split('-');
+
+            // # Atualiza o estado do jogador 1.
+            this.Players[0].HP = Number(STATE_P1[0]);
+            this.Players[0].position = STATE_P1[1];
+
+            // # Atualiza o estado do jogador 2.
+            this.Players[1].HP = Number(STATE_P2[0]);
+            this.Players[1].position = STATE_P2[1];
+        }
+
         // # Repassa os pacotes para os jogadores.
         this.SendPacket(msgPackage);
     }
 
     SendPacket(pack)
     {
-        this.Players.forEach(e => { e.con.send(pack); });
+        this.Players.forEach(e => { if(e.con) e.con.send(pack); });
     }
 }

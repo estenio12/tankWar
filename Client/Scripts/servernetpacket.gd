@@ -37,9 +37,13 @@ func _ParseStringPacket(strPacket: String) -> void:
 		EGlobalEnums.NETCODE.WAIT_MATCH:
 			_packet = {"netcode": net_code};
 		EGlobalEnums.NETCODE.READY:
+			_packet = {"netcode": net_code};	
+		EGlobalEnums.NETCODE.SPECTATOR_LIST:
+			_packet = {"netcode": net_code, "matches": strPacketBlocks[1]};
+		EGlobalEnums.NETCODE.SPECTATOR_ASSIGN:
+			_packet = {"netcode": net_code, "idSpectator": strPacketBlocks[1], "gamestate": strPacketBlocks[1]};
+		EGlobalEnums.NETCODE.SPECTATOR_EXIT:
 			_packet = {"netcode": net_code};
-		EGlobalEnums.NETCODE.POWERUP:
-			_packet = {"netcode": net_code, "powerup": strPacketBlocks[1]};
 
 func GetPacket() -> Dictionary:
 	return _packet;

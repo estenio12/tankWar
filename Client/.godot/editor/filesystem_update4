@@ -1,7 +1,7 @@
-res://Scripts/servernetpacket.gd
-res://UI/lobby.gd
-res://Scripts/global.gd
-res://Maps/arena.gd
 res://Maps/Arena.tscn
+res://Scripts/eplayerType.gd
+res://Scripts/global.gd
 res://Actors/Player/Player.tscn
 res://Actors/Bullet/Bullet.tscn
+res://Maps/arena.gd
+res://Scripts/servernetpacket.gd

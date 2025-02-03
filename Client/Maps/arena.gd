@@ -135,7 +135,13 @@ func ApplyAction() -> void:
 func CheckActionPointCount() -> void:
 	if(action_point <= 0):
 		action_point = MAX_ACTION_POINTS;
-		Global.SendToServer({"netcode": EGlobalEnums.NETCODE.CHANGE_PLAYER, "current_player": Global.GetCurrentPlayer()});
+		Global.SendToServer(\
+		{
+			"netcode": EGlobalEnums.NETCODE.CHANGE_PLAYER, 
+			"current_player": Global.GetCurrentPlayer(),
+			"state_p1": str(ref_green_player.currentHP) + "-" + str(ref_green_player.global_position),
+			"state_p2": str(ref_red_player.currentHP) + "-" + str(ref_red_player.global_position)
+		});
 
 	UpdateLabelActionCount();
 	ActionManager();
