@@ -42,11 +42,12 @@ export class Match
 
     AssignSpectator(con)
     {
-        const idSpectator = ++ID_spectator_count;
+        const idSpectator = ++this.ID_spectator_count;
         const timer = `${this.minute}-${this.second}`;
         this.Players.push({"idSpectator": idSpectator, "con": con});
         let current_game_state = `18|${idSpectator}|${this.Current_turn}|${timer}`;
         this.Players.forEach( e => { current_game_state += `|${e.nickname}-${e.HP}-${e.position}`; } );
+        con.send(current_game_state);
     }
 
     RemoveSpectator(idSpectator)

@@ -73,6 +73,9 @@ func GetCurrentPlayer() -> EGlobalEnums.PLAYER_TYPE:
 func IsMyTank() -> bool:
 	return my_tank == current_player;
 
+func IsSpectator() -> bool:
+	return my_tank == EGlobalEnums.PLAYER_TYPE.SPECTATOR;
+
 func SendToServer(packet: Dictionary) -> void:
 	var package = ConvertToServerPackege(packet);
 	if(IsValidPackage(package) && IsValidRequestSpectator(packet)):

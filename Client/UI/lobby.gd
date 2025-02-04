@@ -75,8 +75,8 @@ func _on_server_process_packet(packet: Dictionary) -> void:
 	if(netcode == EGlobalEnums.NETCODE.SPECTATOR_ASSIGN):
 		var id_spectator = packet["idSpectator"];
 		var current_turn = packet["current_turn"];
-		var P1State		 = packet["p1"].spli("-");
-		var P2State		 = packet["p2"].spli("-");
+		var P1State		 = packet["p1"].split("-");
+		var P2State		 = packet["p2"].split("-");
 		var timer		 = packet["timer"].split("-");
 		
 		Global.id_spectator   = id_spectator;
@@ -84,8 +84,8 @@ func _on_server_process_packet(packet: Dictionary) -> void:
 		Global.my_tank		  = EGlobalEnums.PLAYER_TYPE.SPECTATOR;
 		Global.timer_spectator_minute = int(timer[0]);
 		Global.timer_spectator_second = int(timer[1]);
-		Global.spectator_players_states.push_back({"nickname": P1State[0], "HP": int(P1State[1]), "position": str_to_var("Vector2"+P1State[2])})
-		Global.spectator_players_states.push_back({"nickname": P2State[0], "HP": int(P2State[1]), "position": str_to_var("Vector2"+P2State[2])})
+		Global.spectator_players_states.push_back({"nickname": P1State[0], "HP": float(P1State[1]), "position": str_to_var("Vector2"+P1State[2])})
+		Global.spectator_players_states.push_back({"nickname": P2State[0], "HP": float(P2State[1]), "position": str_to_var("Vector2"+P2State[2])})
 		
 		get_tree().change_scene_to_packed(Global.battle_scene);
 

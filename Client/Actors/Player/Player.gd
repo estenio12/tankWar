@@ -144,3 +144,5 @@ func SetCannonRotation(angle: float) -> void:
 		ref_green_tank_cannon.rotation_degrees = angle;
 	else:
 		ref_red_tank_cannon.rotation_degrees = angle;
+
+
