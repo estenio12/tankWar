@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://b2rpjwqrbgpn2"]
+[gd_scene load_steps=9 format=3 uid="uid://b2rpjwqrbgpn2"]
 
 [ext_resource type="Texture2D" uid="uid://cv2cery3n2lp6" path="res://UI/bg.png" id="1_3hn7t"]
 [ext_resource type="Script" path="res://UI/lobby.gd" id="1_io1xh"]
@@ -18,6 +18,12 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_do70s"]
+bg_color = Color(0.776363, 0.158324, 0.328301, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7yyfj"]
+bg_color = Color(0.776363, 0.158324, 0.328301, 1)
 
 [node name="Control" type="CanvasLayer"]
 script = ExtResource("1_io1xh")
@@ -39,11 +45,12 @@ texture = ExtResource("1_3hn7t")
 metadata/_edit_use_anchors_ = true
 
 [node name="BGFORM" type="ColorRect" parent="Register"]
-custom_minimum_size = Vector2(250, 350)
+custom_minimum_size = Vector2(250, 260)
 layout_mode = 2
 color = Color(0, 0, 0, 0.423529)
 
 [node name="Form" type="VBoxContainer" parent="Register"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 
@@ -65,6 +72,10 @@ text = "Entrar"
 [node name="Setting" type="Button" parent="Register/Form"]
 layout_mode = 2
 text = "Configurações"
+
+[node name="Spectator" type="Button" parent="Register/Form"]
+layout_mode = 2
+text = "Telespectador"
 
 [node name="WaitContainer" type="CenterContainer" parent="Register"]
 visible = false
@@ -111,6 +122,60 @@ text = "Confirmar"
 layout_mode = 2
 text = "Cancelar"
 
+[node name="AssignSpectator" type="Control" parent="Register"]
+visible = false
+custom_minimum_size = Vector2(250, 240)
+layout_mode = 2
+
+[node name="VScrollBar" type="VScrollBar" parent="Register/AssignSpectator"]
+custom_minimum_size = Vector2(230, 220)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -118.0
+offset_top = -125.0
+offset_right = 118.0
+offset_bottom = 95.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Register/AssignSpectator/VScrollBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 1.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="Register/AssignSpectator"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.949167
+anchor_right = 1.0
+anchor_bottom = 1.01488
+offset_top = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/hover = SubResource("StyleBoxFlat_do70s")
+theme_override_styles/normal = SubResource("StyleBoxFlat_7yyfj")
+text = "Voltar"
+metadata/_edit_use_anchors_ = true
+
+[node name="WaitSpectator" type="CenterContainer" parent="Register"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Register/WaitSpectator"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Buscando dados de espectador..."
+horizontal_alignment = 1
+autowrap_mode = 2
+
 [node name="SFX_BG" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_mpilh")
 volume_db = -10.0
@@ -118,4 +183,5 @@ autoplay = true
 
 [connection signal="button_down" from="Register/Form/FindMatch" to="." method="_on_find_match_button_down"]
 [connection signal="button_down" from="Register/Form/Setting" to="." method="_on_setting_button_down"]
+[connection signal="button_down" from="Register/Form/Spectator" to="." method="_on_spectator_button_down"]
 [connection signal="button_down" from="Register/Setting/VBoxContainer/Apply" to="Register/Setting" method="_on_apply_button_down"]

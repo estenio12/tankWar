@@ -12,6 +12,11 @@ var my_tank: EGlobalEnums.PLAYER_TYPE = EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
 var nicknames: Array[String] = ["GreenPlayer", "RedPlayer"]
 var id_match: int = 0;
 
+var id_spectator: int = 0;
+var timer_spectator_minute: int = 0;
+var timer_spectator_second: int = 0;
+var spectator_players_states: Array[Dictionary];
+
 # Dados de conexão
 
 var ServerIP: String = "192.168.15.8";
@@ -70,7 +75,7 @@ func IsMyTank() -> bool:
 
 func SendToServer(packet: Dictionary) -> void:
 	var package = ConvertToServerPackege(packet);
-	if(IsValidPackage(package)):
+	if(IsValidPackage(package) && IsValidRequestSpectator(packet)):
 		socket.send_text(package);
 
 func ConvertToServerPackege(packet: Dictionary) -> String:
@@ -123,6 +128,11 @@ func ConvertToServerPackege(packet: Dictionary) -> String:
 		EGlobalEnums.NETCODE.READY:
 			pack += str(EGlobalEnums.NETCODE.READY) + "|";
 			pack += str(packet["PID"]);
+		EGlobalEnums.NETCODE.SPECTATOR_LIST:
+			pack += str(EGlobalEnums.NETCODE.SPECTATOR_LIST);
+		EGlobalEnums.NETCODE.SPECTATOR_ASSIGN:
+			pack += str(EGlobalEnums.NETCODE.SPECTATOR_ASSIGN) + "|";
+			pack += str(packet["idmatch"]);
 
 	return pack + "|" + str(id_match);
 
@@ -131,4 +141,17 @@ func IsValidPackage(package: String) -> bool:
 		if(package.length() > 0 && package[0] != '|'):
 			return true;
 
+	return false;
+
+func IsValidRequestSpectator(packet: Dictionary) -> bool:
+	var netcode = packet["netcode"] as EGlobalEnums.NETCODE;
+	if(my_tank != EGlobalEnums.PLAYER_TYPE.SPECTATOR):
+		return true;
+	
+	if(my_tank == EGlobalEnums.PLAYER_TYPE.SPECTATOR && \
+	   (netcode == EGlobalEnums.NETCODE.SPECTATOR_LIST || \
+		netcode == EGlobalEnums.NETCODE.SPECTATOR_ASSIGN || \
+		netcode == EGlobalEnums.NETCODE.SPECTATOR_EXIT) ):
+		return true;
+		
 	return false;

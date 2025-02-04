@@ -5,6 +5,9 @@ export class Match
     Players = [];
     Current_turn = 0;
     ID_spectator_count = 0;
+    minute = 5;
+    second = 0;
+    timerRef;
 
     constructor(initData)
     {
@@ -40,8 +43,9 @@ export class Match
     AssignSpectator(con)
     {
         const idSpectator = ++ID_spectator_count;
+        const timer = `${this.minute}-${this.second}`;
         this.Players.push({"idSpectator": idSpectator, "con": con});
-        let current_game_state = `18|${idSpectator}|${this.Current_turn}`;
+        let current_game_state = `18|${idSpectator}|${this.Current_turn}|${timer}`;
         this.Players.forEach( e => { current_game_state += `|${e.nickname}-${e.HP}-${e.position}`; } );
     }
 
@@ -66,6 +70,8 @@ export class Match
                 let turn_select = Math.floor(Math.random() * 2);
                 let pack = `9|${turn_select}`;
                 this.SendPacket(pack);
+                // # Inicia a contagem de tempo.
+                this.timerRef = setInterval(() => { this.timerHandler(); }, 1000);
                 return;
             }
         }
@@ -109,5 +115,25 @@ export class Match
     SendPacket(pack)
     {
         this.Players.forEach(e => { if(e.con) e.con.send(pack); });
+    }
+    
+    timerHandler()
+    {
+        if(this.minute <= 0 && this.second <= 0)
+        {
+            clearInterval(this.timerRef);
+            return;
+        }
+
+        this.second--;
+
+        if(this.second <= 0)
+        {
+            this.minute--;
+            this.second = 59;
+
+            if(this.minute <= 0)
+                this.minute = 0;
+        }
     }
 }

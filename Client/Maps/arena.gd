@@ -52,24 +52,37 @@ var powerup_acquired: EGlobalEnums.POWERUP = EGlobalEnums.POWERUP.NONE;
 
 func _ready() -> void:
 	# Signals
-	self.placement_selected.connect(Callable(self, "_on_placement_selected"));
-	self.ref_bullet.BulletStop.connect(Callable(self, "_on_bullet_stop"));
-	Global.ReceiveDataFromServer.connect(Callable(self, "_on_receive_data_from_server"));
-	self.ref_green_player.PlayerDead.connect(Callable(self, "_on_player_dead"));
-	self.ref_red_player.PlayerDead.connect(Callable(self, "_on_player_dead"));
+	if(Global.my_tank != EGlobalEnums.PLAYER_TYPE.SPECTATOR):
+		self.placement_selected.connect(Callable(self, "_on_placement_selected"));
+		self.ref_bullet.BulletStop.connect(Callable(self, "_on_bullet_stop"));
+		Global.ReceiveDataFromServer.connect(Callable(self, "_on_receive_data_from_server"));
+		self.ref_green_player.PlayerDead.connect(Callable(self, "_on_player_dead"));
+		self.ref_red_player.PlayerDead.connect(Callable(self, "_on_player_dead"));
+	
+	if(Global.my_tank == EGlobalEnums.PLAYER_TYPE.SPECTATOR):
+		var p1_state = Global.spectator_players_states[0];
+		var p2_state = Global.spectator_players_states[1];
+		ref_green_player.player_name = p1_state["nickname"];
+		ref_green_player.current_hp  = p1_state["HP"];
+		ref_green_player.global_position = p1_state["position"]
+		ref_red_player.player_name = p2_state["nickname"];
+		ref_red_player.current_hp  = p2_state["HP"];
+		ref_red_player.global_position = p2_state["position"];
 
-	ref_green_player.LoadPlayerNames();
-	ref_red_player.LoadPlayerNames();
+	if(Global.my_tank != EGlobalEnums.PLAYER_TYPE.SPECTATOR):
+		ref_green_player.LoadPlayerNames();
+		ref_red_player.LoadPlayerNames();
 
 	self.players = [ref_green_player, ref_red_player];
-	self.placements = [ref_placement_green_player, ref_placement_red_player];
 	
-	# Loads
-	action_point = MAX_ACTION_POINTS;
-	UpdateLabelActionCount();
+	if(Global.my_tank != EGlobalEnums.PLAYER_TYPE.SPECTATOR):
+		self.placements = [ref_placement_green_player, ref_placement_red_player];	
+		action_point = MAX_ACTION_POINTS;
+		UpdateLabelActionCount();
 
 	# Notifica o servidor de que está tudo carregado. 
-	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.READY, "PID": Global.my_tank}); 
+	if(Global.my_tank != EGlobalEnums.PLAYER_TYPE.SPECTATOR):
+		Global.SendToServer({"netcode": EGlobalEnums.NETCODE.READY, "PID": Global.my_tank});
 
 func _physics_process(delta: float) -> void:
 	# Sistema para escolher a pontência do canhão.
@@ -186,7 +199,13 @@ func _on_receive_data_from_server(packet: Dictionary) -> void:
 			current_action = EGlobalEnums.ACTION.SELECTION;
 			ActionManager();
 		EGlobalEnums.NETCODE.CHANGE_PLAYER:
-			var player_target = packet["player"];
+			var player_target = packet["current_player"];
+			var state_p1 = packet["state_p1"].split("-");
+			var state_p2 = packet["state_p2"].split("-");
+			ref_green_player.current_hp = int(state_p1[0]);
+			ref_green_player.global_position = str_to_var("Vector2"+state_p1[1]);
+			ref_red_player.current_hp = int(state_p2[0]);
+			ref_red_player.global_position = str_to_var("Vector2"+state_p2[1]);
 			Global.ChangePlayer(player_target);
 			action_point = MAX_ACTION_POINTS;
 			current_action = EGlobalEnums.ACTION.CHANGE_PLAYER;

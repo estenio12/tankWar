@@ -21,7 +21,7 @@ func _ParseStringPacket(strPacket: String) -> void:
 		EGlobalEnums.NETCODE.RESET_MOVIMENT:
 			_packet = {"netcode": net_code};
 		EGlobalEnums.NETCODE.CHANGE_PLAYER:
-			_packet = {"netcode": net_code, "player": int(strPacketBlocks[1]) as EGlobalEnums.PLAYER_TYPE};
+			_packet = {"netcode": net_code, "current_player": int(strPacketBlocks[1]) as EGlobalEnums.PLAYER_TYPE, "state_p1": str(strPacketBlocks[2]), "state_p2": str(strPacketBlocks[3]) };
 		EGlobalEnums.NETCODE.SELECTION:
 			_packet = {"netcode": net_code};
 		EGlobalEnums.NETCODE.ATTACK:
@@ -41,7 +41,7 @@ func _ParseStringPacket(strPacket: String) -> void:
 		EGlobalEnums.NETCODE.SPECTATOR_LIST:
 			_packet = {"netcode": net_code, "matches": strPacketBlocks[1]};
 		EGlobalEnums.NETCODE.SPECTATOR_ASSIGN:
-			_packet = {"netcode": net_code, "idSpectator": strPacketBlocks[1], "gamestate": strPacketBlocks[1]};
+			_packet = {"netcode": net_code, "idSpectator": int(strPacketBlocks[1]), "current_turn": int(strPacketBlocks[2]) as EGlobalEnums.PLAYER_TYPE, "timer": str(strPacketBlocks[3]), "p1": str(strPacketBlocks[4]), "p2": str(strPacketBlocks[5])};
 		EGlobalEnums.NETCODE.SPECTATOR_EXIT:
 			_packet = {"netcode": net_code};
 

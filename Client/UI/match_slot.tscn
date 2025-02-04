@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=3 uid="uid://dyhgy2qhspfw8"]
+
+[ext_resource type="Script" path="res://UI/match_slot.gd" id="1_hmggv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_624h0"]
+font_color = Color(1, 1, 0.364706, 1)
+
+[node name="MatchSlot" type="Control"]
+custom_minimum_size = Vector2(230, 40)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -922.0
+offset_bottom = -608.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hmggv")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 1
+offset_right = 230.0
+offset_bottom = 40.0
+theme_override_constants/separation = 10
+metadata/_edit_use_anchors_ = true
+
+[node name="IDMatch" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "000"
+label_settings = SubResource("LabelSettings_624h0")
+clip_text = true
+
+[node name="P1Nickname" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+text = "0"
+clip_text = true
+
+[node name="P2Nickname" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+text = "0
+"
+clip_text = true
+
+[node name="Assign" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -57.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 8
+text = "Entrar"
+
+[connection signal="button_down" from="Assign" to="." method="_on_assign_button_down"]
