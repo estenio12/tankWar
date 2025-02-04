@@ -50,7 +50,6 @@ layout_mode = 2
 color = Color(0, 0, 0, 0.423529)
 
 [node name="Form" type="VBoxContainer" parent="Register"]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 
@@ -167,6 +166,7 @@ text = "Voltar"
 metadata/_edit_use_anchors_ = true
 
 [node name="WaitSpectator" type="CenterContainer" parent="Register"]
+visible = false
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Register/WaitSpectator"]

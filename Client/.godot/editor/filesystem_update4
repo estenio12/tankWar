@@ -1,10 +1,5 @@
-res://UI/lobby.tscn
 res://Maps/Arena.tscn
 res://Actors/Player/Player.tscn
 res://Actors/Bullet/Bullet.tscn
+res://UI/lobby.tscn
 res://UI/match_slot.tscn
-res://UI/match_slot.gd
-res://UI/lobby.gd
-res://Scripts/global.gd
-res://Scripts/servernetpacket.gd
-res://Maps/arena.gd

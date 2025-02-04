@@ -22,7 +22,7 @@ signal PlayerDead(player_type: EGlobalEnums.PLAYER_TYPE);
 var start_position: Vector2 = Vector2.ZERO;
 var recording_last_postion: bool = false;
 var player_name: String = "unnamed";
-var MAX_HP: float = 5;
+const MAX_HP: float = 5;
 var currentHP: float = MAX_HP;
 
 # Variável de rotação dos canhões.

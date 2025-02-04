@@ -38,8 +38,8 @@ var is_game_over: bool = false;
 var winner_name: String = "Unnamed";
 var is_player_change: bool = false;
 
-var seconds: int = 0;
-var minutes: int = 1;
+var seconds: int = 59;
+var minutes: int = 4;
 
 var MAX_TURN_TIME_SECONDS: float = 30;
 var turn_time_seconds: float = MAX_TURN_TIME_SECONDS;
@@ -63,10 +63,10 @@ func _ready() -> void:
 		var p1_state = Global.spectator_players_states[0];
 		var p2_state = Global.spectator_players_states[1];
 		ref_green_player.player_name = p1_state["nickname"];
-		ref_green_player.current_hp  = p1_state["HP"];
+		ref_green_player.current_hp  = float(p1_state["HP"]);
 		ref_green_player.global_position = p1_state["position"]
 		ref_red_player.player_name = p2_state["nickname"];
-		ref_red_player.current_hp  = p2_state["HP"];
+		ref_red_player.current_hp  = float(p2_state["HP"]);
 		ref_red_player.global_position = p2_state["position"];
 
 	if(Global.my_tank != EGlobalEnums.PLAYER_TYPE.SPECTATOR):
@@ -202,9 +202,9 @@ func _on_receive_data_from_server(packet: Dictionary) -> void:
 			var player_target = packet["current_player"];
 			var state_p1 = packet["state_p1"].split("-");
 			var state_p2 = packet["state_p2"].split("-");
-			ref_green_player.current_hp = int(state_p1[0]);
+			#ref_green_player.current_hp = float(state_p1[0]);
 			ref_green_player.global_position = str_to_var("Vector2"+state_p1[1]);
-			ref_red_player.current_hp = int(state_p2[0]);
+			#ref_red_player.current_hp = float(state_p2[0]);
 			ref_red_player.global_position = str_to_var("Vector2"+state_p2[1]);
 			Global.ChangePlayer(player_target);
 			action_point = MAX_ACTION_POINTS;

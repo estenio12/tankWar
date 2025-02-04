@@ -5,7 +5,7 @@ extends CanvasLayer
 @onready var ref_form 	 = $Register/Form;
 @onready var ref_input   = $Register/Form/nickname;
 @onready var ref_match_container: VBoxContainer = $Register/AssignSpectator/VScrollBar/VBoxContainer;
-@onready var ref_assign_spec: CenterContainer = $Register/AssignSpectator;
+@onready var ref_assign_spec: Control = $Register/AssignSpectator;
 @onready var ref_wait_spec: CenterContainer = $Register/WaitSpectator;
 
 # Called when the node enters the scene tree for the first time.
