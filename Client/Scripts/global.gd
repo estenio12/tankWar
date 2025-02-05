@@ -25,7 +25,14 @@ var ServerPORT: int = 7080;
 var socket = WebSocketPeer.new()
 
 func _ready() -> void:
+	debugOS();
 	CreateConnection();
+
+func debugOS() -> void:
+	if(OS.get_name() == "Windows"):
+		ServerIP = "192.168.1.216";
+	else:
+		ServerIP = "192.168.15.8";
 
 func _process(_delta: float) -> void:
 	socket.poll()
@@ -54,6 +61,8 @@ func RetryConnection() -> void:
 	CreateConnection();
 
 func CreateConnection() -> void:
+	if(socket.get_ready_state() == WebSocketPeer.STATE_OPEN):
+		socket.close();
 	socket.connect_to_url(BuildURL());
 
 func BuildURL() -> String:

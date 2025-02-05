@@ -1,14 +1,1 @@
-res://Scripts/servernetpacket.gd
-res://Actors/Bullet/bullet.gd
-res://UI/setting.gd
-res://UI/match_slot.gd
-res://Maps/arena.gd
-res://Scripts/global.gd
-res://Scripts/eplayerType.gd
-res://UI/lobby.gd
-res://Actors/Player/Player.gd
 res://Maps/Arena.tscn
-res://Actors/Player/Player.tscn
-res://Actors/Bullet/Bullet.tscn
-res://UI/lobby.tscn
-res://UI/match_slot.tscn

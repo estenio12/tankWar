@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=4 uid="uid://bresdy52fgn0v"]
+[gd_scene load_steps=57 format=4 uid="uid://bresdy52fgn0v"]
 
 [ext_resource type="Texture2D" uid="uid://bhrtln83ivc54" path="res://Assets/oak_woods/oak_woods_tileset.png" id="1_auuua"]
 [ext_resource type="Script" path="res://Maps/arena.gd" id="1_u7kww"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://Maps/Placement.gd" id="9_mnq3g"]
 [ext_resource type="Texture2D" uid="uid://dd1n5kqwmhg2h" path="res://UI/UIAsset2.png" id="12_km1gm"]
 [ext_resource type="AudioStream" uid="uid://cylb4amggtwm2" path="res://Audio/tank_fire.wav" id="14_4lu8x"]
+[ext_resource type="Texture2D" uid="uid://i8lhqmr4hs58" path="res://UI/TankHUD.png" id="14_pj1bp"]
 [ext_resource type="AudioStream" uid="uid://dkathumh8mekd" path="res://Audio/bg_music.wav" id="15_wy606"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4v7gw"]
@@ -578,6 +579,35 @@ modulate_color = Color(0.473475, 0.521044, 0.108536, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_bbd2w"]
 font_size = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2mnvj"]
+bg_color = Color(0.211765, 0.211765, 0.211765, 0.611765)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+expand_margin_left = 1.0
+expand_margin_top = 1.0
+expand_margin_right = 1.0
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qck6p"]
+bg_color = Color(0.463937, 0.586463, 0.20487, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4aryp"]
+atlas = ExtResource("14_pj1bp")
+region = Rect2(6.63358, 7.81679, 32.306, 28.0016)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_moxju"]
+bg_color = Color(0.958534, 0.373009, 0.331823, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0r8b6"]
+load_path = "res://.godot/imported/TankHUD.png-0012f9a4d1b3e09da3f75003b893f7a8.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1x8i8"]
+atlas = SubResource("CompressedTexture2D_0r8b6")
+region = Rect2(78.2682, 6.47189, 30.3233, 27.0531)
 
 [node name="Arena" type="Node2D"]
 script = ExtResource("1_u7kww")
@@ -1206,6 +1236,7 @@ show_percentage = false
 [node name="TurnTimeManager" type="Timer" parent="HUD/TurnTimer"]
 
 [node name="LoadScreen" type="Control" parent="HUD"]
+visible = false
 z_index = 10
 layout_mode = 3
 anchors_preset = 15
@@ -1242,6 +1273,77 @@ grow_vertical = 2
 text = "Carregando..."
 label_settings = SubResource("LabelSettings_bbd2w")
 metadata/_edit_use_anchors_ = true
+
+[node name="HUDSpectator" type="CenterContainer" parent="HUD"]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.131173
+grow_horizontal = 2
+size_flags_horizontal = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/HUDSpectator"]
+custom_minimum_size = Vector2(500, 50)
+layout_mode = 2
+alignment = 1
+
+[node name="GreenPlayerBar" type="Control" parent="HUD/HUDSpectator/HBoxContainer"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="BPBar" type="ProgressBar" parent="HUD/HUDSpectator/HBoxContainer/GreenPlayerBar"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 13.0
+offset_right = 166.0
+offset_bottom = 27.0
+theme_override_styles/background = SubResource("StyleBoxFlat_2mnvj")
+theme_override_styles/fill = SubResource("StyleBoxFlat_qck6p")
+value = 100.0
+show_percentage = false
+
+[node name="Icone" type="TextureRect" parent="HUD/HUDSpectator/HBoxContainer/GreenPlayerBar"]
+layout_mode = 2
+offset_left = -2.0
+offset_right = 55.0
+offset_bottom = 50.0
+texture = SubResource("AtlasTexture_4aryp")
+
+[node name="RedPlayerBar2" type="Control" parent="HUD/HUDSpectator/HBoxContainer"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="BPBar" type="ProgressBar" parent="HUD/HUDSpectator/HBoxContainer/RedPlayerBar2"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -169.0
+offset_top = -13.0
+offset_right = -49.0
+offset_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_2mnvj")
+theme_override_styles/fill = SubResource("StyleBoxFlat_moxju")
+value = 100.0
+show_percentage = false
+
+[node name="Icone" type="TextureRect" parent="HUD/HUDSpectator/HBoxContainer/RedPlayerBar2"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -57.0
+offset_top = -25.0
+offset_bottom = 25.0
+grow_horizontal = 0
+grow_vertical = 2
+texture = SubResource("AtlasTexture_1x8i8")
 
 [node name="SFX_Fire" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("14_4lu8x")

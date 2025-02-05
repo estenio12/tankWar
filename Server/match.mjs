@@ -24,9 +24,9 @@ export class Match
 
         // # Carrega stats dos jogadores.
         this.Players[0].HP = 5;
-        this.Players[0].position = "(0, 0)";
+        this.Players[0].position = "(79, 86)";
         this.Players[1].HP = 5;
-        this.Players[1].position = "(0, 0)";
+        this.Players[1].position = "(1123, 78)";
 
         // # Monta pacote base.
         let base_pack = `10|${this.ID}|${this.Players[0].nickname}|${this.Players[1].nickname}|`;
@@ -46,7 +46,7 @@ export class Match
         const timer = `${this.minute}-${this.second}`;
         this.Players.push({"idSpectator": idSpectator, "con": con});
         let current_game_state = `18|${idSpectator}|${this.Current_turn}|${timer}`;
-        this.Players.forEach( e => { current_game_state += `|${e.nickname}-${e.HP}-${e.position}`; } );
+        this.Players.forEach( e => { if(e["idSpectator"] == null) current_game_state += `|${e.nickname}-${e.HP}-${e.position}`; } );
         con.send(current_game_state);
     }
 
