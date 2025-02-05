@@ -28,6 +28,7 @@ signal placement_selected(global_position: Vector2);
 @onready var ref_sfx_fire: AudioStreamPlayer = $SFX_Fire;
 @onready var ref_loadscreen: Control = $HUD/LoadScreen;
 @onready var ref_sfx_env: AudioStreamPlayer = $SFX_Env;
+@onready var ref_hud_spectator: CenterContainer = $HUD/HUDSpectator;
 
 const MAX_ACTION_POINTS: int = 2;
 const MAX_ATTACK_SECTION: int = 2;
@@ -67,6 +68,7 @@ func _ready() -> void:
 		ref_red_player.currentHP   = p2_state["HP"];
 		ref_red_player.global_position = p2_state["position"];
 		ref_loadscreen.visible = false;
+		ref_hud_spectator.visible = true;
 
 	if(!Global.IsSpectator()):
 		ref_green_player.LoadPlayerNames();
@@ -195,6 +197,9 @@ func EnableTurnTime() -> void:
 func TurnTimeOver() -> void:
 	action_point = 0;
 	CheckActionPointCount();
+
+func UpdateHUDSpectator() -> void:
+	pass
 
 #------------------------- DATA SERVER PROCESSING 
 
@@ -333,6 +338,9 @@ func _on_bullet_stop(isPlayer: bool, player_target: EGlobalEnums.PLAYER_TYPE) ->
 				
 			if(player_target == EGlobalEnums.PLAYER_TYPE.RED_PLAYER && current_p != EGlobalEnums.PLAYER_TYPE.RED_PLAYER):
 				ref_red_player.ApplyDamage();
+				
+		if(Global.IsSpectator()):
+			UpdateHUDSpectator();
 		
 		# Tempo para voltar o target da câmera para os jogadores.
 		await get_tree().create_timer(2).timeout;

@@ -1,1 +1,6 @@
 res://Maps/Arena.tscn
+res://Actors/Player/Player.tscn
+res://Actors/Bullet/Bullet.tscn
+res://UI/lobby.tscn
+res://UI/match_slot.tscn
+res://Maps/arena.gd

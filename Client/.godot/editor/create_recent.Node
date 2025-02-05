@@ -1,11 +1,11 @@
-ProgressBar
-Control
+Label
 TextureRect
+Control
+ProgressBar
 HBoxContainer
 CenterContainer
 ScrollContainer
 ItemList
-Label
 Button
 VBoxContainer
 VScrollBar

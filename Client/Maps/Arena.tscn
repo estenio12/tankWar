@@ -1,4 +1,4 @@
-[gd_scene load_steps=57 format=4 uid="uid://bresdy52fgn0v"]
+[gd_scene load_steps=59 format=4 uid="uid://bresdy52fgn0v"]
 
 [ext_resource type="Texture2D" uid="uid://bhrtln83ivc54" path="res://Assets/oak_woods/oak_woods_tileset.png" id="1_auuua"]
 [ext_resource type="Script" path="res://Maps/arena.gd" id="1_u7kww"]
@@ -598,6 +598,15 @@ bg_color = Color(0.463937, 0.586463, 0.20487, 1)
 [sub_resource type="AtlasTexture" id="AtlasTexture_4aryp"]
 atlas = ExtResource("14_pj1bp")
 region = Rect2(6.63358, 7.81679, 32.306, 28.0016)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fl7b5"]
+atlas = ExtResource("14_pj1bp")
+region = Rect2(45.5073, 32.54, 27.7811, 26.6729)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qagcn"]
+font_size = 14
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_moxju"]
 bg_color = Color(0.958534, 0.373009, 0.331823, 1)
@@ -1275,6 +1284,7 @@ label_settings = SubResource("LabelSettings_bbd2w")
 metadata/_edit_use_anchors_ = true
 
 [node name="HUDSpectator" type="CenterContainer" parent="HUD"]
+visible = false
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.131173
@@ -1309,6 +1319,28 @@ offset_right = 55.0
 offset_bottom = 50.0
 texture = SubResource("AtlasTexture_4aryp")
 
+[node name="Timer" type="Control" parent="HUD/HUDSpectator/HBoxContainer"]
+z_index = 1
+custom_minimum_size = Vector2(40, 20)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="HUD/HUDSpectator/HBoxContainer/Timer"]
+layout_mode = 0
+offset_left = -3.0
+offset_top = -2.0
+offset_right = 41.0
+offset_bottom = 42.0
+texture = SubResource("AtlasTexture_fl7b5")
+
+[node name="Counter" type="Label" parent="HUD/HUDSpectator/HBoxContainer/Timer"]
+layout_mode = 0
+offset_right = 41.0
+offset_bottom = 41.0
+text = "00:00"
+label_settings = SubResource("LabelSettings_qagcn")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="RedPlayerBar2" type="Control" parent="HUD/HUDSpectator/HBoxContainer"]
 custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
@@ -1321,14 +1353,15 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = -169.0
-offset_top = -13.0
+offset_top = -12.0
 offset_right = -49.0
-offset_bottom = 1.0
+offset_bottom = 2.0
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_2mnvj")
 theme_override_styles/fill = SubResource("StyleBoxFlat_moxju")
 value = 100.0
+fill_mode = 1
 show_percentage = false
 
 [node name="Icone" type="TextureRect" parent="HUD/HUDSpectator/HBoxContainer/RedPlayerBar2"]
@@ -1340,7 +1373,8 @@ anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = -57.0
 offset_top = -25.0
-offset_bottom = 25.0
+offset_right = -1.0
+offset_bottom = 24.0
 grow_horizontal = 0
 grow_vertical = 2
 texture = SubResource("AtlasTexture_1x8i8")
