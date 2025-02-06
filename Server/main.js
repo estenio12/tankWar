@@ -12,9 +12,16 @@ const CLIENT_PORT = 8080;
 const IP = getLocalIP();
 
 const app = express();
+
+app.use((req, res, next) => {
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+    res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+    next();
+});
+
 const options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
+    key: fs.readFileSync('cert/key.pem'),
+    cert: fs.readFileSync('cert/cert.pem')
 };
 
 app.use(express.static('client')); // Servir os arquivos do jogo
