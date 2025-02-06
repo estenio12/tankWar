@@ -1,9 +1,31 @@
 import { MatchMaking } from './matchmaking.mjs'
-import { Match } from './match.mjs'
 import { WebSocketServer } from 'ws';
+import { Match } from './match.mjs'
+import express from 'express';
+import path from 'path';
 import os from 'os';
 
+// Definições de caminhos
 const PORT = 7080;
+const CLIENT_PORT = 8080;
+
+const app = express();
+
+// Configurar os cabeçalhos de segurança necessários para SharedArrayBuffer
+app.use((req, res, next) => {
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+    next();
+});
+
+// Servir os arquivos do jogo na pasta 'client'
+app.use(express.static(path.join(process.cwd(), 'client')));
+
+// Criar servidor HTTP para servir os arquivos do jogo
+const server = app.listen(CLIENT_PORT, () => {
+    console.log(`Servidor HTTP rodando em http://${getLocalIP()}:${CLIENT_PORT}`);
+});
+
 const wss = new WebSocketServer({ port: PORT });
 
 console.log(`Server running in ${getLocalIP()}:${PORT}`);

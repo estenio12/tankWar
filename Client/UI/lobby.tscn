@@ -175,6 +175,7 @@ autowrap_mode = 2
 stream = ExtResource("2_mpilh")
 volume_db = -10.0
 autoplay = true
+playback_type = 2
 
 [connection signal="button_down" from="Register/Form/FindMatch" to="." method="_on_find_match_button_down"]
 [connection signal="button_down" from="Register/Form/Setting" to="." method="_on_setting_button_down"]

@@ -1441,12 +1441,12 @@ texture = SubResource("AtlasTexture_1x8i8")
 
 [node name="SFX_Fire" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("14_4lu8x")
-playback_type = 1
+playback_type = 2
 
 [node name="SFX_Env" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("15_wy606")
 volume_db = -15.0
-playback_type = 1
+playback_type = 2
 
 [connection signal="button_down" from="HUD/ChooseAction/VBoxContainer/HBoxContainer/MovimentAction" to="." method="_on_moviment_action_button_down"]
 [connection signal="button_down" from="HUD/ChooseAction/VBoxContainer/HBoxContainer/AttackAction" to="." method="_on_attack_action_button_down"]
