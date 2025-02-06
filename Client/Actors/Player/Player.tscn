@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://fuuapogjlmic"]
+[gd_scene load_steps=17 format=3 uid="uid://fuuapogjlmic"]
 
 [ext_resource type="Script" path="res://Actors/Player/Player.gd" id="1_8q1wp"]
 [ext_resource type="Texture2D" uid="uid://dinej5exfhevb" path="res://Actors/Player/tank.png" id="1_vo3dt"]
@@ -18,8 +18,35 @@ size = Vector2(22, 11)
 texture = ExtResource("3_4vso6")
 region_rect = Rect2(14.4408, 231.463, 295.089, 37.3668)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_g37le"]
-texture = ExtResource("3_4vso6")
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_837mi"]
+load_path = "res://.godot/imported/UIAsset2.png-e460798037c438a814df7058296a9a27.ctex"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gq0np"]
+texture = SubResource("CompressedTexture2D_837mi")
+region_rect = Rect2(102.159, 701.044, 299.518, 38.2039)
+modulate_color = Color(0.977656, 0.654868, 0, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jdedv"]
+load_path = "res://.godot/imported/UIAsset2.png-e460798037c438a814df7058296a9a27.ctex"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ovr6f"]
+texture = SubResource("CompressedTexture2D_jdedv")
+region_rect = Rect2(102.159, 701.044, 299.518, 38.2039)
+modulate_color = Color(0.568656, 0.719088, 0.126091, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hprb6"]
+load_path = "res://.godot/imported/UIAsset2.png-e460798037c438a814df7058296a9a27.ctex"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ha5ew"]
+texture = SubResource("CompressedTexture2D_hprb6")
+region_rect = Rect2(102.159, 701.044, 299.518, 38.2039)
+modulate_color = Color(0.977656, 0.654868, 0, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ybt3o"]
+load_path = "res://.godot/imported/UIAsset2.png-e460798037c438a814df7058296a9a27.ctex"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dkten"]
+texture = SubResource("CompressedTexture2D_ybt3o")
 region_rect = Rect2(102.159, 701.044, 299.518, 38.2039)
 modulate_color = Color(0.568656, 0.719088, 0.126091, 1)
 
@@ -104,14 +131,24 @@ handle_input_locally = false
 size = Vector2i(50, 10)
 render_target_update_mode = 4
 
-[node name="ProgressBar" type="ProgressBar" parent="GreenHPBarContainer/GreenPlayer"]
+[node name="bar" type="ProgressBar" parent="GreenHPBarContainer/GreenPlayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxTexture_5e52a")
-theme_override_styles/fill = SubResource("StyleBoxTexture_g37le")
+theme_override_styles/fill = SubResource("StyleBoxTexture_gq0np")
+value = 100.0
+show_percentage = false
+
+[node name="value" type="ProgressBar" parent="GreenHPBarContainer/GreenPlayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/fill = SubResource("StyleBoxTexture_ovr6f")
 value = 100.0
 show_percentage = false
 
@@ -132,13 +169,23 @@ handle_input_locally = false
 size = Vector2i(50, 10)
 render_target_update_mode = 4
 
-[node name="ProgressBar" type="ProgressBar" parent="RedHPBarContainer/RedPlayer"]
+[node name="bar" type="ProgressBar" parent="RedHPBarContainer/RedPlayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxTexture_5e52a")
-theme_override_styles/fill = SubResource("StyleBoxTexture_g37le")
+theme_override_styles/fill = SubResource("StyleBoxTexture_ha5ew")
+value = 100.0
+show_percentage = false
+
+[node name="value" type="ProgressBar" parent="RedHPBarContainer/RedPlayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/fill = SubResource("StyleBoxTexture_dkten")
 value = 100.0
 show_percentage = false

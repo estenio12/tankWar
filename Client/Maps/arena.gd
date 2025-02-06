@@ -15,7 +15,9 @@ signal placement_selected(global_position: Vector2);
 @onready var ref_hud_power_attack_container: HBoxContainer = $HUD/AttackForceContainer
 @onready var ref_hud_power_attack: ProgressBar = $HUD/AttackForceContainer/ProgressBar
 @onready var ref_hud_won_screen: CenterContainer = $HUD/WonScreen;
+@onready var ref_hud_spec_won_screen: CenterContainer = $HUD/SpectatorWonScreen;
 @onready var ref_hud_winner_name: Label = $HUD/WonScreen/VBoxContainer/WinnerName;
+@onready var ref_hud_spec_winner_name: Label = $HUD/SpectatorWonScreen/VBoxContainer/WinnerName;
 @onready var ref_hud_won_screen_close_game = $HUD/WonScreen/VBoxContainer/CloseGame;
 @onready var ref_bullet: Area2D = $Bullet;
 @onready var ref_camera: Camera2D = $Camera2D;
@@ -29,6 +31,9 @@ signal placement_selected(global_position: Vector2);
 @onready var ref_loadscreen: Control = $HUD/LoadScreen;
 @onready var ref_sfx_env: AudioStreamPlayer = $SFX_Env;
 @onready var ref_hud_spectator: CenterContainer = $HUD/HUDSpectator;
+@onready var ref_hud_spectator_p1_hp_bar: ProgressBar = $HUD/HUDSpectator/HBoxContainer/GreenPlayerBar/BPBar;
+@onready var ref_hud_spectator_p2_hp_bar: ProgressBar = $HUD/HUDSpectator/HBoxContainer/RedPlayerBar/BPBar;
+@onready var ref_hud_spectator_timer: Label = $HUD/HUDSpectator/HBoxContainer/Timer/Counter;
 
 const MAX_ACTION_POINTS: int = 2;
 const MAX_ATTACK_SECTION: int = 2;
@@ -37,9 +42,10 @@ var power_direction: int = 10;
 var in_power_selection: bool = false;
 var is_game_over: bool = false;
 var winner_name: String = "Unnamed";
+var spectator_hud_deactivate: bool = false;
 
 var seconds: int = 59;
-var minutes: int = 0;
+var minutes: int = 4;
 
 var MAX_TURN_TIME_SECONDS: float = 30;
 var turn_time_seconds: float = MAX_TURN_TIME_SECONDS;
@@ -63,12 +69,18 @@ func _ready() -> void:
 		var p2_state = Global.spectator_players_states[1];
 		ref_green_player.player_name = p1_state["nickname"];
 		ref_green_player.currentHP   = p1_state["HP"];
-		ref_green_player.global_position = p1_state["position"]
+		ref_green_player.global_position = p1_state["position"];
+		ref_green_player.UpdateBarrier();
 		ref_red_player.player_name = p2_state["nickname"];
 		ref_red_player.currentHP   = p2_state["HP"];
 		ref_red_player.global_position = p2_state["position"];
+		ref_red_player.UpdateBarrier();
 		ref_loadscreen.visible = false;
 		ref_hud_spectator.visible = true;
+		minutes = Global.timer_spectator_minute;
+		seconds = Global.timer_spectator_second;
+		ref_hud_time_manager.start(1);
+		UpdateHUDSpectator();
 
 	if(!Global.IsSpectator()):
 		ref_green_player.LoadPlayerNames();
@@ -105,7 +117,11 @@ func UpdateLabelActionCount() -> void:
 	ref_label_action_count.text = str(action_point);
 
 func UpdateLabelTimeManager() -> void:
-	ref_hud_timer_label.text = str("%02d" % minutes) + ":" + str("%02d" % seconds);
+	var time: String = str("%02d" % minutes) + ":" + str("%02d" % seconds);
+	ref_hud_timer_label.text = time;
+
+	if(Global.IsSpectator()):
+		ref_hud_spectator_timer.text = time;
 
 func ActionManager() -> void:
 	if(is_game_over):
@@ -136,6 +152,12 @@ func ActionManager() -> void:
 					ref_hud_power_attack_container.visible = true;
 
 func DisableAllHUDs() -> void:
+	if(Global.IsSpectator() && is_game_over && !spectator_hud_deactivate):
+		spectator_hud_deactivate = true;
+	
+	if(Global.IsSpectator() && is_game_over && spectator_hud_deactivate):
+		return;
+
 	ref_hud_apply_action.visible  	   = false;
 	ref_hud_choose_action.visible 	   = false;
 	ref_placement_green_player.visible = false;
@@ -166,11 +188,24 @@ func CheckActionPointCount() -> void:
 
 func ShowWinnerScreen() -> void:
 	DisableAllHUDs();
+
+	if(Global.IsSpectator() && winner_name == "Unnamed"):
+		ref_hud_winner_name.text = GetSpectatorWinner();
+		ref_hud_spec_winner_name.text = GetSpectatorWinner();
+	else:
+		ref_hud_winner_name.text = winner_name;
+		ref_hud_spec_winner_name.text = winner_name;
+
 	ref_hud_bar_screen.visible = false;
-	ref_hud_turn_time.visible = false;
+	ref_hud_turn_time.visible  = false;
+	ref_hud_spectator.visible  = false;
 	ref_hud_turn_time_manager.stop();
-	ref_hud_winner_name.text = winner_name;
-	ref_hud_won_screen.visible = true;
+
+	if(Global.IsSpectator()):
+		ref_hud_spec_won_screen.visible = true;
+	else:
+		ref_hud_won_screen.visible = true;
+
 	await get_tree().create_timer(2).timeout;
 	ref_hud_won_screen_close_game.visible = true;
 
@@ -178,28 +213,50 @@ func ShowWinnerScreen() -> void:
 		Global.SendToServer({"netcode": EGlobalEnums.NETCODE.CLOSE_GAME, "PID": Global.my_tank});
 
 func TimeIsOver() -> void:
-	ref_hud_time_manager.stop();
+	if(!is_game_over):
+		ref_hud_time_manager.stop();;
+		_on_player_dead(GetWinner());
+
+func EnableTurnTime() -> void:
+	if(!is_game_over):
+		ref_hud_turn_time_counter.value = 100;
+		turn_time_seconds = MAX_TURN_TIME_SECONDS;
+		var turn_time = 1;
+
+		if(minutes <= 1):
+			turn_time = 0.4;
+
+		ref_hud_turn_time_manager.start(turn_time);
+
+func TurnTimeOver() -> void:
+	if(!is_game_over):
+		action_point = 0;
+		CheckActionPointCount();
+		ref_green_player.select_angle_active = false;
+		ref_red_player.select_angle_active = false;
+
+func UpdateHUDSpectator() -> void:
+	ref_hud_spectator_p1_hp_bar.value = ref_green_player.GetHPBarrier();
+	ref_hud_spectator_p2_hp_bar.value = ref_red_player.GetHPBarrier();
+
+func GetWinner() -> EGlobalEnums.PLAYER_TYPE:
 	var green_player_hp: float = ref_green_player.currentHP;
 	var red_player_hp: float = ref_red_player.currentHP;
 
 	if(green_player_hp > red_player_hp):
-		_on_player_dead(EGlobalEnums.PLAYER_TYPE.RED_PLAYER);
+		return EGlobalEnums.PLAYER_TYPE.RED_PLAYER;
 	elif(green_player_hp < red_player_hp):
-		_on_player_dead(EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER);
+		return EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER;
 	else:
-		_on_player_dead(EGlobalEnums.PLAYER_TYPE.BOTH);
+		return EGlobalEnums.PLAYER_TYPE.BOTH;
 
-func EnableTurnTime() -> void:
-	ref_hud_turn_time_counter.value = 100;
-	turn_time_seconds = MAX_TURN_TIME_SECONDS;
-	ref_hud_turn_time_manager.start(1);
-
-func TurnTimeOver() -> void:
-	action_point = 0;
-	CheckActionPointCount();
-
-func UpdateHUDSpectator() -> void:
-	pass
+func GetSpectatorWinner() -> String:
+	if(GetWinner() == EGlobalEnums.PLAYER_TYPE.RED_PLAYER):
+		return ref_green_player.player_name;
+	if(GetWinner() == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
+		return ref_red_player.player_name;
+	else:
+		return "Empate"
 
 #------------------------- DATA SERVER PROCESSING 
 
@@ -212,25 +269,31 @@ func _on_receive_data_from_server(packet: Dictionary) -> void:
 		EGlobalEnums.NETCODE.SELECTION:
 			current_action = EGlobalEnums.ACTION.SELECTION;
 			ActionManager();
-		EGlobalEnums.NETCODE.CHANGE_PLAYER:
-			var player_target = packet["current_player"];
-			var state_p1 = packet["state_p1"].split("-");
-			var state_p2 = packet["state_p2"].split("-");
-			ref_green_player.currentHP = state_p1[0];
-			ref_green_player.global_position = str_to_var("Vector2"+state_p1[1]);
-			ref_red_player.currentHP = state_p2[0];
-			ref_red_player.global_position = str_to_var("Vector2"+state_p2[1]);
-			Global.ChangePlayer(player_target);
-			action_point = MAX_ACTION_POINTS;
-			ref_hud_player_name.text = GetCurrentPlayer().player_name;
-			current_action = EGlobalEnums.ACTION.CHANGE_PLAYER;
-			ActionManager();
-			if(!Global.IsMyTank()):
-				await get_tree().create_timer(2).timeout;
-
-			current_action = EGlobalEnums.ACTION.SELECTION;
-			ActionManager();
 			EnableTurnTime();
+		EGlobalEnums.NETCODE.CHANGE_PLAYER:
+			if(!is_game_over):
+				var player_target = packet["current_player"];
+				var state_p1 = packet["state_p1"].split("-");
+				var state_p2 = packet["state_p2"].split("-");
+				ref_green_player.currentHP = state_p1[0];
+				ref_green_player.global_position = str_to_var("Vector2"+state_p1[1]);
+				ref_red_player.currentHP = state_p2[0];
+				ref_red_player.global_position = str_to_var("Vector2"+state_p2[1]);
+				Global.ChangePlayer(player_target);
+				action_point = MAX_ACTION_POINTS;
+				ref_hud_player_name.text = GetCurrentPlayer().player_name;
+				current_action = EGlobalEnums.ACTION.CHANGE_PLAYER;
+				ActionManager();
+
+				if(!Global.IsMyTank()):
+					await get_tree().create_timer(2).timeout;
+				
+				if(Global.IsSpectator()):
+					UpdateHUDSpectator();
+
+				current_action = EGlobalEnums.ACTION.SELECTION;
+				ActionManager();
+				EnableTurnTime();
 		EGlobalEnums.NETCODE.APPLY_MOVIMENT:
 			GetCurrentPlayer().SetPosition(packet["position"]);
 			GetCurrentPlayer().ApplyPosition();
@@ -344,17 +407,21 @@ func _on_bullet_stop(isPlayer: bool, player_target: EGlobalEnums.PLAYER_TYPE) ->
 		
 		# Tempo para voltar o target da câmera para os jogadores.
 		await get_tree().create_timer(2).timeout;
-		ref_camera.EnableTargetInBullet(false);
+
+		if(!is_game_over):
+			ref_camera.EnableTargetInBullet(false);
 		
-		if(action_point <= 1):
+		if(action_point < 1):
 			await get_tree().create_timer(1).timeout;
 		else:
-			ref_hud_turn_time_manager.start(1);
+			EnableTurnTime();
 
-		if(!Global.IsSpectator()):
+		if(!Global.IsSpectator() && !is_game_over):
 			current_action = EGlobalEnums.ACTION.SELECTION;
-		ActionManager();
-		CheckActionPointCount();
+
+		if(!is_game_over):
+			ActionManager();
+			CheckActionPointCount();
 
 func _on_player_dead(pplayer: EGlobalEnums.PLAYER_TYPE) -> void:
 	is_game_over = true;

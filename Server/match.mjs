@@ -5,8 +5,8 @@ export class Match
     Players = [];
     Current_turn = 0;
     ID_spectator_count = 0;
-    minute = 5;
-    second = 0;
+    minute = 4;
+    second = 57;
     timerRef;
 
     constructor(initData)
@@ -83,6 +83,8 @@ export class Match
             let IDPlayer = Number(chunks[1]);
             this.Players[IDPlayer].IsReady = true;
 
+            console.log("Debug fechar: ", IDPlayer);
+
             if(this.Players[0].isCloseGame && this.Players[1].isCloseGame)
             {
                 this.Players.forEach(e => { e.con.close(); e.con = null; });
@@ -107,6 +109,11 @@ export class Match
             // # Atualiza o estado do jogador 2.
             this.Players[1].HP = Number(STATE_P2[0]);
             this.Players[1].position = STATE_P2[1];
+        }
+
+        if(netcode == 8)
+        {
+            setTimeout(() => { this.GameIsRunning = false; },1000);
         }
 
         // # Repassa os pacotes para os jogadores.

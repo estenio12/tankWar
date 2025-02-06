@@ -31,9 +31,14 @@ func AssignToMatch(IDMatch: String) -> void:
 	ref_waiting.visible = true;
 	Global.id_match = int(IDMatch);
 
+func ClearMatchList() -> void:
+	for child in ref_match_container.get_children():
+		child.queue_free();
+
 func _on_close_setting() -> void:
 	DisableAllHuds();
 	ref_form.visible = true;
+	ClearMatchList();
 
 func _on_setting_button_down() -> void:
 	DisableAllHuds();
@@ -59,14 +64,21 @@ func _on_server_process_packet(packet: Dictionary) -> void:
 		get_tree().change_scene_to_packed(Global.battle_scene);
 		
 	if(netcode == EGlobalEnums.NETCODE.SPECTATOR_LIST):
-		var matches = str(packet["matches"]).split("#")
-		
-		for it: String in matches:
-			var chunks = it.split("-");
-			var slot: MatchSlot = load("res://UI/match_slot.tscn").instantiate();
-			slot.LoadMatchInfo(chunks[0], chunks[1], chunks[2]);
-			slot.AssignMatch.connect(Callable(self, "AssignToMatch"));
-			ref_match_container.call_deferred("add_child", slot);
+		var matches = str(packet["matches"]).split("#") as PackedStringArray;
+
+		# Remove todas opções carregadas antes.
+		ClearMatchList();
+
+		# Aguarda um frame para garantir que os nós foram removidos
+		await get_tree().process_frame;
+
+		if(!matches[0].is_empty() && matches.size() > 1):
+			for it: String in matches:
+				var chunks = it.split("-");
+				var slot: MatchSlot = load("res://UI/match_slot.tscn").instantiate();
+				slot.LoadMatchInfo(chunks[0], chunks[1], chunks[2]);
+				slot.AssignMatch.connect(Callable(self, "AssignToMatch"));
+				ref_match_container.add_child(slot);
 			
 		# Mostra a tela de opções.
 		DisableAllHuds();
@@ -93,3 +105,7 @@ func _on_spectator_button_down() -> void:
 	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.SPECTATOR_LIST});
 	DisableAllHuds();
 	ref_wait_spec.visible = true;
+	ClearMatchList();
+
+func _on_assign_back_button_down() -> void:
+	_on_close_setting();

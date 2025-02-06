@@ -1208,6 +1208,66 @@ label_settings = SubResource("LabelSettings_k8aqq")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="SpectatorWonScreen" type="CenterContainer" parent="HUD"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="BG" type="ColorRect" parent="HUD/SpectatorWonScreen"]
+custom_minimum_size = Vector2(320, 300)
+layout_mode = 2
+color = Color(0, 0, 0, 0.478431)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/SpectatorWonScreen"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HUD/SpectatorWonScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("9_dm43l")
+text = "Vitória"
+label_settings = SubResource("LabelSettings_bhmjn")
+horizontal_alignment = 1
+
+[node name="Separator" type="ColorRect" parent="HUD/SpectatorWonScreen/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+color = Color(1, 1, 1, 0)
+
+[node name="WinnerName" type="Label" parent="HUD/SpectatorWonScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("9_dm43l")
+text = "Unnamed"
+label_settings = SubResource("LabelSettings_1fipk")
+horizontal_alignment = 1
+
+[node name="Separator2" type="ColorRect" parent="HUD/SpectatorWonScreen/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+color = Color(1, 1, 1, 0)
+
+[node name="CloseGame" type="TextureButton" parent="HUD/SpectatorWonScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = SubResource("AtlasTexture_rq1q8")
+
+[node name="Label" type="Label" parent="HUD/SpectatorWonScreen/VBoxContainer/CloseGame"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 3.0
+offset_right = 201.0
+offset_bottom = 64.0
+text = "Fechar"
+label_settings = SubResource("LabelSettings_k8aqq")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="HUDGamplay" type="CenterContainer" parent="HUD"]
 visible = false
 custom_minimum_size = Vector2(0, 35)
@@ -1341,11 +1401,11 @@ label_settings = SubResource("LabelSettings_qagcn")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RedPlayerBar2" type="Control" parent="HUD/HUDSpectator/HBoxContainer"]
+[node name="RedPlayerBar" type="Control" parent="HUD/HUDSpectator/HBoxContainer"]
 custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 
-[node name="BPBar" type="ProgressBar" parent="HUD/HUDSpectator/HBoxContainer/RedPlayerBar2"]
+[node name="BPBar" type="ProgressBar" parent="HUD/HUDSpectator/HBoxContainer/RedPlayerBar"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
@@ -1364,7 +1424,7 @@ value = 100.0
 fill_mode = 1
 show_percentage = false
 
-[node name="Icone" type="TextureRect" parent="HUD/HUDSpectator/HBoxContainer/RedPlayerBar2"]
+[node name="Icone" type="TextureRect" parent="HUD/HUDSpectator/HBoxContainer/RedPlayerBar"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
@@ -1393,5 +1453,6 @@ playback_type = 1
 [connection signal="button_up" from="HUD/ApplyAction/BtnAccept" to="." method="_on_btn_apply_action_accept_button_up"]
 [connection signal="button_up" from="HUD/ApplyAction/BtnBack" to="." method="_on_btn_apply_action_back_button_up"]
 [connection signal="button_down" from="HUD/WonScreen/VBoxContainer/CloseGame" to="." method="_on_close_game_button_down"]
+[connection signal="button_down" from="HUD/SpectatorWonScreen/VBoxContainer/CloseGame" to="." method="_on_close_game_button_down"]
 [connection signal="timeout" from="HUD/HUDGamplay/TimeManager" to="." method="_on_time_second_pass"]
 [connection signal="timeout" from="HUD/TurnTimer/TurnTimeManager" to="." method="_on_turn_timer_second_pass"]

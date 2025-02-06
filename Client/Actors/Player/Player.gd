@@ -8,8 +8,10 @@ signal PlayerDead(player_type: EGlobalEnums.PLAYER_TYPE);
 @onready var ref_red_tank: Node2D   = $RedTank;
 @onready var ref_green_tank_cannon  = $GreenTank/Cannon;
 @onready var ref_red_tank_cannon  	= $RedTank/Cannon;
-@onready var ref_green_tank_hp_bar  = $GreenHPBarContainer/GreenPlayer/ProgressBar;
-@onready var ref_red_tank_hp_bar 	= $RedHPBarContainer/RedPlayer/ProgressBar;
+@onready var ref_green_tank_hp_bar  = $GreenHPBarContainer/GreenPlayer/bar;
+@onready var ref_green_tank_hp_value  = $GreenHPBarContainer/GreenPlayer/value;
+@onready var ref_red_tank_hp_bar 	  = $RedHPBarContainer/RedPlayer/bar;
+@onready var ref_red_tank_hp_value 	  = $RedHPBarContainer/RedPlayer/value;
 @onready var ref_green_tank_hp_container = $GreenHPBarContainer;
 @onready var ref_red_tank_hp_container   = $RedHPBarContainer;
 
@@ -129,15 +131,16 @@ func GetSpawnBulletAngle() -> float:
 
 func ApplyDamage() -> void:
 	currentHP = clamp(currentHP - 1, 0, 5);
-	var percent: float = (currentHP * 100) / MAX_HP;
+	UpdateBarrier();
 
-	if(player_type == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
-		ref_green_tank_hp_bar.value = percent
-	else:
-		ref_red_tank_hp_bar.value = percent
-
-	if(percent <= 0):
+	if(currentHP <= 0):
 		PlayerDead.emit(player_type);
+
+func GetHPBarrier() -> float:
+	if(player_type == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
+		return ref_green_tank_hp_value.value;
+	else:
+		return ref_red_tank_hp_value.value;
 
 func SetCannonRotation(angle: float) -> void:
 	if(player_type == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
@@ -145,4 +148,22 @@ func SetCannonRotation(angle: float) -> void:
 	else:
 		ref_red_tank_cannon.rotation_degrees = angle;
 
+func UpdateShadowBarrier(percent: float) -> void:
+	await get_tree().create_timer(1).timeout;
 
+	var tween = create_tween();
+
+	if(player_type == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
+		tween.tween_property(ref_green_tank_hp_bar, "value", percent, 0.5);
+	else:
+		tween.tween_property(ref_red_tank_hp_bar, "value", percent, 0.5);
+
+func UpdateBarrier() -> void:
+	var percent: float = (currentHP * 100) / MAX_HP;
+
+	if(player_type == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
+		ref_green_tank_hp_value.value = percent	
+	else:
+		ref_red_tank_hp_value.value = percent
+
+	UpdateShadowBarrier(percent);

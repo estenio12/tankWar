@@ -127,7 +127,6 @@ custom_minimum_size = Vector2(250, 240)
 layout_mode = 2
 
 [node name="VScrollBar" type="ScrollContainer" parent="Register/AssignSpectator"]
-custom_minimum_size = Vector2(230, 220)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -142,11 +141,12 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Register/AssignSpectator/VScrollBar"]
+custom_minimum_size = Vector2(230, 220)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="Register/AssignSpectator"]
+[node name="AssignBack" type="Button" parent="Register/AssignSpectator"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.949167
@@ -180,3 +180,4 @@ autoplay = true
 [connection signal="button_down" from="Register/Form/Setting" to="." method="_on_setting_button_down"]
 [connection signal="button_down" from="Register/Form/Spectator" to="." method="_on_spectator_button_down"]
 [connection signal="button_down" from="Register/Setting/VBoxContainer/Apply" to="Register/Setting" method="_on_apply_button_down"]
+[connection signal="button_down" from="Register/AssignSpectator/AssignBack" to="." method="_on_assign_back_button_down"]
