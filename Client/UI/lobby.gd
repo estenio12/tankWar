@@ -39,7 +39,6 @@ func _on_close_setting() -> void:
 	DisableAllHuds();
 	ref_form.visible = true;
 	ClearMatchList();
-	Global
 
 func _on_setting_button_down() -> void:
 	DisableAllHuds();

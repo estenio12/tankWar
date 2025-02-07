@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b2rpjwqrbgpn2"]
+[gd_scene load_steps=10 format=3 uid="uid://b2rpjwqrbgpn2"]
 
 [ext_resource type="Texture2D" uid="uid://cv2cery3n2lp6" path="res://UI/bg.png" id="1_3hn7t"]
 [ext_resource type="Script" path="res://UI/lobby.gd" id="1_io1xh"]
@@ -24,6 +24,11 @@ bg_color = Color(0.776363, 0.158324, 0.328301, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7yyfj"]
 bg_color = Color(0.776363, 0.158324, 0.328301, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_epplp"]
+font_size = 12
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
 
 [node name="Control" type="CanvasLayer"]
 script = ExtResource("1_io1xh")
@@ -176,6 +181,22 @@ stream = ExtResource("2_mpilh")
 volume_db = -10.0
 autoplay = true
 playback_type = 2
+
+[node name="Trademark" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -146.0
+offset_top = 132.0
+offset_right = 139.0
+offset_bottom = 155.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Jogo desenvolvido por Estenio Garcia"
+label_settings = SubResource("LabelSettings_epplp")
+horizontal_alignment = 1
 
 [connection signal="button_down" from="Register/Form/FindMatch" to="." method="_on_find_match_button_down"]
 [connection signal="button_down" from="Register/Form/Setting" to="." method="_on_setting_button_down"]
