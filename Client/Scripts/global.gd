@@ -20,13 +20,9 @@ var spectator_players_states: Array[Dictionary];
 # Dados de conexão
 
 var ServerIP: String = "192.168.15.8";
-var ServerPORT: int = 7080;
+var ServerPORT: int = 8080;
 
-var socket = WebSocketPeer.new()
-
-func _ready() -> void:
-	debugOS();
-	CreateConnection();
+var socket: WebSocketPeer;
 
 func debugOS() -> void:
 	if(OS.get_name() == "Windows"):
@@ -35,38 +31,37 @@ func debugOS() -> void:
 		ServerIP = "192.168.15.8";
 
 func _process(_delta: float) -> void:
-	socket.poll()
-	var state = socket.get_ready_state()
+	if(socket != null):
+		socket.poll()
+		var state = socket.get_ready_state()
 
-	if state == WebSocketPeer.STATE_OPEN:
-		while socket.get_available_packet_count():
-			var strPacket = socket.get_packet().get_string_from_utf8();
-			ReceiveDataFromServer.emit(ServerNetPacket.new(strPacket).GetPacket());
-	elif state == WebSocketPeer.STATE_CLOSING:
-		# Keep polling to achieve proper close.
-		pass
-	elif state == WebSocketPeer.STATE_CLOSED:
-		var code = socket.get_close_code()
-		var reason = socket.get_close_reason()
-		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
-		set_process(false) # Stop processing.
+		if state == WebSocketPeer.STATE_OPEN:
+			while socket.get_available_packet_count():
+				var strPacket = socket.get_packet().get_string_from_utf8();
+				ReceiveDataFromServer.emit(ServerNetPacket.new(strPacket).GetPacket());
+		elif state == WebSocketPeer.STATE_CLOSING:
+			# Keep polling to achieve proper close.
+			pass
+		elif state == WebSocketPeer.STATE_CLOSED:
+			var code = socket.get_close_code()
+			var reason = socket.get_close_reason()
+			print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
+			set_process(false) # Stop processing.
 
 func UpdateConection(pIP: String, pPORT: int) -> void:
 	ServerIP   = pIP;
 	ServerPORT = pPORT
-	socket.close();
 	CreateConnection();
 
 func RetryConnection() -> void:
 	CreateConnection();
 
 func CreateConnection() -> void:
-	if(socket.get_ready_state() == WebSocketPeer.STATE_OPEN):
-		socket.close();
+	socket = WebSocketPeer.new();
 	socket.connect_to_url(BuildURL());
 
 func BuildURL() -> String:
-	return "ws://%s:%d" % [ServerIP, ServerPORT];
+	return "wss://%s:%d" % [ServerIP, ServerPORT];
 
 func LoadPlayers(pid_match: int, p1_nickname: String, p2_nickname: String, pmy_tank: EGlobalEnums.PLAYER_TYPE) -> void:
 	id_match  = pid_match;
@@ -86,6 +81,9 @@ func IsSpectator() -> bool:
 	return my_tank == EGlobalEnums.PLAYER_TYPE.SPECTATOR;
 
 func SendToServer(packet: Dictionary) -> void:
+	if(socket.get_ready_state() != WebSocketPeer.STATE_OPEN):
+		CreateConnection();
+	
 	var package = ConvertToServerPackege(packet);
 	if(IsValidPackage(package) && IsValidRequestSpectator(packet)):
 		socket.send_text(package);

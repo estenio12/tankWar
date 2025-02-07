@@ -1,3 +1,7 @@
-res://Maps/Arena.tscn
-res://Actors/Bullet/Bullet.tscn
 res://UI/lobby.tscn
+res://Scripts/global.gd
+res://UI/lobby.gd
+res://UI/setting.gd
+res://Maps/Arena.tscn
+res://Actors/Player/Player.tscn
+res://Actors/Bullet/Bullet.tscn

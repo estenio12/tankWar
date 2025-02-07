@@ -26,11 +26,12 @@ const options = {
 
 app.use(express.static('client')); // Servir os arquivos do jogo
 
-https.createServer(options, app).listen(CLIENT_PORT, () => {
+const wssServer = https.createServer(options, app);
+const wss = new WebSocketServer({ server: wssServer });
+
+wssServer.listen(CLIENT_PORT, () => {
     console.log(`Servidor rodando em https://${IP}:${CLIENT_PORT}`);
 });
-
-const wss = new WebSocketServer({ port: PORT });
 
 console.log(`Server running in ${IP}:${PORT}`);
 
