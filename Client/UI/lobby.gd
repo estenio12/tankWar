@@ -102,6 +102,7 @@ func _on_server_process_packet(packet: Dictionary) -> void:
 		get_tree().change_scene_to_packed(Global.battle_scene);
 
 func _on_spectator_button_down() -> void:
+	Global.RetryConnection();
 	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.SPECTATOR_LIST});
 	DisableAllHuds();
 	ref_wait_spec.visible = true;
