@@ -69,9 +69,11 @@ func _on_server_process_packet(packet: Dictionary) -> void:
 		# Aguarda um frame para garantir que os nós foram removidos
 		await get_tree().process_frame;
 
-		if(!matches[0].is_empty() && matches.size() > 1):
+		if(!matches[0].is_empty()):
+			print("entrei");
 			for it: String in matches:
 				var chunks = it.split("-");
+				print("entrei for: ", chunks);
 				var slot: MatchSlot = load("res://UI/match_slot.tscn").instantiate();
 				slot.LoadMatchInfo(chunks[0], chunks[1], chunks[2]);
 				slot.AssignMatch.connect(Callable(self, "AssignToMatch"));
@@ -99,10 +101,15 @@ func _on_server_process_packet(packet: Dictionary) -> void:
 		get_tree().change_scene_to_packed(Global.battle_scene);
 
 func _on_spectator_button_down() -> void:
-	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.SPECTATOR_LIST});
 	DisableAllHuds();
 	ref_wait_spec.visible = true;
 	ClearMatchList();
+
+	if(Global.socket == null || Global.socket.get_ready_state() != WebSocketPeer.STATE_OPEN):
+		Global.CreateConnection();
+
+	await get_tree().create_timer(1).timeout;
+	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.SPECTATOR_LIST});
 
 func _on_assign_back_button_down() -> void:
 	_on_close_setting();

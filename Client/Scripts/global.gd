@@ -81,13 +81,11 @@ func IsSpectator() -> bool:
 	return my_tank == EGlobalEnums.PLAYER_TYPE.SPECTATOR;
 
 func SendToServer(packet: Dictionary) -> void:
-	if(socket == null || (socket.get_ready_state() != WebSocketPeer.STATE_OPEN)):
+	if(socket == null || socket.get_ready_state() != WebSocketPeer.STATE_OPEN):
 		CreateConnection();
 	
 	var package = ConvertToServerPackege(packet);
-	print("Debug sendToServer -> ", package);
 	if(IsValidPackage(package) && IsValidRequestSpectator(packet)):
-		print("Debug sendToServer | entrei -> ", package);
 		socket.send_text(package);
 
 func ConvertToServerPackege(packet: Dictionary) -> String:

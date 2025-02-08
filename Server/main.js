@@ -39,7 +39,6 @@ wss.on('connection', (ws) =>
 {
     ws.on('message', (message) => 
     {
-        console.log("Recebi mensagem: ", message);
         const chunks = message.toString().split('|');
         const netcode = Number(chunks[0]);
 
