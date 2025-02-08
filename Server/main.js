@@ -7,8 +7,7 @@ import fs from 'fs';
 import os from 'os';
 
 // Definições de caminhos
-const PORT = 7080;
-const CLIENT_PORT = 8080;
+const PORT = 8080;
 const IP = getLocalIP();
 
 const app = express();
@@ -29,11 +28,9 @@ app.use(express.static('client')); // Servir os arquivos do jogo
 const wssServer = https.createServer(options, app);
 const wss = new WebSocketServer({ server: wssServer });
 
-wssServer.listen(CLIENT_PORT, () => {
-    console.log(`Servidor rodando em https://${IP}:${CLIENT_PORT}`);
+wssServer.listen(PORT, () => {
+    console.log(`Servidor rodando em https://${IP}:${PORT}`);
 });
-
-console.log(`Server running in ${IP}:${PORT}`);
 
 var matchmaking = new MatchMaking();
 var matches = [];
@@ -42,6 +39,7 @@ wss.on('connection', (ws) =>
 {
     ws.on('message', (message) => 
     {
+        console.log("Recebi mensagem: ", message);
         const chunks = message.toString().split('|');
         const netcode = Number(chunks[0]);
 

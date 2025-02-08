@@ -6,7 +6,7 @@ export class Match
     Current_turn = 0;
     ID_spectator_count = 0;
     minute = 4;
-    second = 57;
+    second = 59;
     timerRef;
 
     constructor(initData)
@@ -72,7 +72,7 @@ export class Match
                 let pack = `9|${turn_select}`;
                 this.SendPacket(pack);
                 // # Inicia a contagem de tempo.
-                this.timerRef = setInterval(() => { this.timerHandler(); }, 1000);
+                this.timerRef = setInterval(() => { this.TimerHandler(); }, 1000);
                 return;
             }
         }
@@ -109,6 +109,8 @@ export class Match
             // # Atualiza o estado do jogador 2.
             this.Players[1].HP = Number(STATE_P2[0]);
             this.Players[1].position = STATE_P2[1];
+
+            msgPackage += `|${this.minute}|${this.second}`;
         }
 
         if(netcode == 8)
@@ -125,15 +127,16 @@ export class Match
         this.Players.forEach(e => { if(e.con) e.con.send(pack); });
     }
     
-    timerHandler()
+    TimerHandler()
     {
+        this.second--;
+
         if(this.minute <= 0 && this.second <= 0)
         {
             clearInterval(this.timerRef);
+            this.DefineWinner();
             return;
         }
-
-        this.second--;
 
         if(this.second <= 0)
         {
@@ -143,5 +146,24 @@ export class Match
             if(this.minute <= 0)
                 this.minute = 0;
         }
+    }
+
+    DefineWinner()
+    {
+        const PID1_HP = this.Players[0].HP;
+        const PID2_HP = this.Players[1].HP;
+
+        let IDWinner;
+
+        if(PID1_HP > PID2_HP)
+            IDWinner = 0;
+        else if(PID1_HP < PID2_HP)
+            IDWinner = 1;
+        else
+            IDWinner = 2; // # Empate
+
+        let pack = `8|${IDWinner}`;
+        
+        this.SendPacket(pack)
     }
 }

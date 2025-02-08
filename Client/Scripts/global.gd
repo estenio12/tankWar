@@ -85,13 +85,13 @@ func SendToServer(packet: Dictionary) -> void:
 		CreateConnection();
 	
 	var package = ConvertToServerPackege(packet);
+	print("Debug sendToServer -> ", package);
 	if(IsValidPackage(package) && IsValidRequestSpectator(packet)):
+		print("Debug sendToServer | entrei -> ", package);
 		socket.send_text(package);
 
 func ConvertToServerPackege(packet: Dictionary) -> String:
 	var pack: String = "";
-	
-	#print("Debug pack: ", packet);
 
 	match(packet["netcode"] as EGlobalEnums.NETCODE):
 		EGlobalEnums.NETCODE.MOVIMENT:
@@ -147,9 +147,9 @@ func ConvertToServerPackege(packet: Dictionary) -> String:
 	return pack + "|" + str(id_match);
 
 func IsValidPackage(package: String) -> bool:
-	if(socket.get_ready_state() == WebSocketPeer.STATE_OPEN):
-		if(package.length() > 0 && package[0] != '|'):
-			return true;
+	# if(socket.get_ready_state() == WebSocketPeer.STATE_OPEN):
+	if(package.length() > 0 && package[0] != '|'):
+		return true;
 
 	return false;
 

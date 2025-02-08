@@ -21,7 +21,7 @@ func _ParseStringPacket(strPacket: String) -> void:
 		EGlobalEnums.NETCODE.RESET_MOVIMENT:
 			_packet = {"netcode": net_code};
 		EGlobalEnums.NETCODE.CHANGE_PLAYER:
-			_packet = {"netcode": net_code, "current_player": int(strPacketBlocks[1]) as EGlobalEnums.PLAYER_TYPE, "state_p1": str(strPacketBlocks[2]), "state_p2": str(strPacketBlocks[3]) };
+			_packet = {"netcode": net_code, "current_player": int(strPacketBlocks[1]) as EGlobalEnums.PLAYER_TYPE, "state_p1": str(strPacketBlocks[2]), "state_p2": str(strPacketBlocks[3]), "min": int(strPacketBlocks[5]), "sec": int(strPacketBlocks[6])};
 		EGlobalEnums.NETCODE.SELECTION:
 			_packet = {"netcode": net_code};
 		EGlobalEnums.NETCODE.ATTACK:

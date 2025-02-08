@@ -45,9 +45,6 @@ func _on_setting_button_down() -> void:
 	ref_setting.visible = true;
 
 func _on_find_match_button_down() -> void:
-	if(Global.socket.get_ready_state() != WebSocketPeer.STATE_OPEN):
-		Global.RetryConnection();
-
 	var input: String = ref_input.text;
 	Global.last_name_picked = input;
 	if(input.length() > 0):
@@ -102,7 +99,6 @@ func _on_server_process_packet(packet: Dictionary) -> void:
 		get_tree().change_scene_to_packed(Global.battle_scene);
 
 func _on_spectator_button_down() -> void:
-	Global.RetryConnection();
 	Global.SendToServer({"netcode": EGlobalEnums.NETCODE.SPECTATOR_LIST});
 	DisableAllHuds();
 	ref_wait_spec.visible = true;

@@ -5,7 +5,7 @@ signal placement_selected(global_position: Vector2);
 # Refeências
 @onready var ref_hud_choose_action: CenterContainer = $HUD/ChooseAction;
 @onready var ref_label_action_count: Label = $HUD/ChooseAction/VBoxContainer/Control/amount;
-@onready var ref_hud_apply_action: HBoxContainer = $HUD/ApplyAction;
+@onready var ref_hud_apply_action: VBoxContainer = $HUD/ApplyAction;
 @onready var ref_placement_green_player: SubViewportContainer = $PlacementGreenPlayer;
 @onready var ref_placement_red_player: SubViewportContainer = $PlacementRedPlayer;
 @onready var ref_green_player: Player = $GreenPlayer;
@@ -214,8 +214,8 @@ func ShowWinnerScreen() -> void:
 
 func TimeIsOver() -> void:
 	if(!is_game_over):
-		ref_hud_time_manager.stop();;
-		_on_player_dead(GetWinner());
+		ref_hud_time_manager.stop();
+		is_game_over = true;
 
 func EnableTurnTime() -> void:
 	if(!is_game_over):
@@ -258,6 +258,12 @@ func GetSpectatorWinner() -> String:
 	else:
 		return "Empate"
 
+func UpdateTimerFromServer(pmin: int, psec: int) -> void:
+	minutes = pmin;
+	seconds = psec;
+	_on_time_second_pass();
+	ref_hud_time_manager.start(1);
+
 #------------------------- DATA SERVER PROCESSING 
 
 func _on_receive_data_from_server(packet: Dictionary) -> void:
@@ -272,6 +278,7 @@ func _on_receive_data_from_server(packet: Dictionary) -> void:
 			EnableTurnTime();
 		EGlobalEnums.NETCODE.CHANGE_PLAYER:
 			if(!is_game_over):
+				UpdateTimerFromServer(packet["min"], packet["sec"]);
 				var player_target = packet["current_player"];
 				var state_p1 = packet["state_p1"].split("-");
 				var state_p2 = packet["state_p2"].split("-");
@@ -324,6 +331,7 @@ func _on_receive_data_from_server(packet: Dictionary) -> void:
 		EGlobalEnums.NETCODE.END_GAME:
 			ref_hud_turn_time_manager.stop();
 			ref_hud_turn_time.visible = false;
+			is_game_over = true;
 
 			var player_won = packet["player"] as EGlobalEnums.PLAYER_TYPE;
 			
