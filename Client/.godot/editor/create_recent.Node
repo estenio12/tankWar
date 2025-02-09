@@ -1,10 +1,10 @@
+CenterContainer
+Control
 VBoxContainer
 Label
 TextureRect
-Control
 ProgressBar
 HBoxContainer
-CenterContainer
 ScrollContainer
 ItemList
 Button

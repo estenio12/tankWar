@@ -986,40 +986,39 @@ ref_marker = NodePath("../../../MarkerGroup/RP_6")
 
 [node name="ChooseAction" type="CenterContainer" parent="HUD"]
 visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -83.0
-offset_top = -96.0
-offset_right = 83.0
-offset_bottom = 16.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="BG" type="ColorRect" parent="HUD/ChooseAction"]
-custom_minimum_size = Vector2(350, 170)
+custom_minimum_size = Vector2(180, 120)
 layout_mode = 2
 color = Color(0, 0, 0, 0.223529)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HUD/ChooseAction"]
+[node name="Control" type="CenterContainer" parent="HUD/ChooseAction"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/ChooseAction/Control"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="HUD/ChooseAction/VBoxContainer"]
+[node name="Label" type="Label" parent="HUD/ChooseAction/Control/VBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("9_dm43l")
 text = "Ações disponíveis:"
 horizontal_alignment = 1
 
-[node name="Control" type="Control" parent="HUD/ChooseAction/VBoxContainer"]
+[node name="Control" type="Control" parent="HUD/ChooseAction/Control/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+size_flags_horizontal = 4
 
-[node name="TextureRect" type="TextureRect" parent="HUD/ChooseAction/VBoxContainer/Control"]
+[node name="TextureRect" type="TextureRect" parent="HUD/ChooseAction/Control/VBoxContainer/Control"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1034,7 +1033,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("AtlasTexture_81bsp")
 
-[node name="amount" type="Label" parent="HUD/ChooseAction/VBoxContainer/Control"]
+[node name="amount" type="Label" parent="HUD/ChooseAction/Control/VBoxContainer/Control"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1051,33 +1050,45 @@ text = "0
 "
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HUD/ChooseAction/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 15
-alignment = 1
-
-[node name="MovimentAction" type="TextureButton" parent="HUD/ChooseAction/VBoxContainer/HBoxContainer"]
-texture_filter = 1
-layout_mode = 2
-texture_normal = SubResource("AtlasTexture_7w5q1")
-
-[node name="AttackAction" type="TextureButton" parent="HUD/ChooseAction/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-texture_normal = SubResource("AtlasTexture_2vyrp")
-
-[node name="ApplyAction" type="VBoxContainer" parent="HUD"]
-visible = false
+[node name="SelectAction" type="VBoxContainer" parent="HUD"]
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -89.0
-offset_top = -32.0
-offset_bottom = 101.0
+offset_left = -77.0
+offset_top = -36.0
+offset_right = -14.0
+offset_bottom = 108.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="MovimentAction" type="TextureButton" parent="HUD/SelectAction"]
+texture_filter = 1
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_7w5q1")
+
+[node name="AttackAction" type="TextureButton" parent="HUD/SelectAction"]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_2vyrp")
+
+[node name="ApplyAction" type="VBoxContainer" parent="HUD"]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -78.0
+offset_top = -37.5
+offset_right = -14.0
+offset_bottom = 106.5
 grow_horizontal = 0
 grow_vertical = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 15
 alignment = 1
 
 [node name="BtnAccept" type="TextureButton" parent="HUD/ApplyAction"]
@@ -1450,8 +1461,8 @@ stream = ExtResource("15_wy606")
 volume_db = -15.0
 playback_type = 2
 
-[connection signal="button_down" from="HUD/ChooseAction/VBoxContainer/HBoxContainer/MovimentAction" to="." method="_on_moviment_action_button_down"]
-[connection signal="button_down" from="HUD/ChooseAction/VBoxContainer/HBoxContainer/AttackAction" to="." method="_on_attack_action_button_down"]
+[connection signal="button_down" from="HUD/SelectAction/MovimentAction" to="." method="_on_moviment_action_button_down"]
+[connection signal="button_down" from="HUD/SelectAction/AttackAction" to="." method="_on_attack_action_button_down"]
 [connection signal="button_up" from="HUD/ApplyAction/BtnAccept" to="." method="_on_btn_apply_action_accept_button_up"]
 [connection signal="button_up" from="HUD/ApplyAction/BtnBack" to="." method="_on_btn_apply_action_back_button_up"]
 [connection signal="button_down" from="HUD/WonScreen/VBoxContainer/CloseGame" to="." method="_on_close_game_button_down"]

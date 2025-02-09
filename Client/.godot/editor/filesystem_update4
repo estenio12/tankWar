@@ -1,12 +1,5 @@
-res://Actors/Bullet/bullet.gd
-res://Scripts/global.gd
-res://UI/setting.gd
-res://UI/lobby.gd
-res://Actors/Player/Player.gd
-res://Maps/arena.gd
-res://Scripts/eplayerType.gd
-res://Scripts/servernetpacket.gd
-res://UI/lobby.tscn
 res://Maps/Arena.tscn
+res://Maps/arena.gd
 res://Actors/Player/Player.tscn
 res://Actors/Bullet/Bullet.tscn
+res://UI/lobby.tscn

@@ -3,8 +3,9 @@ extends Node2D
 signal placement_selected(global_position: Vector2);
 
 # Refeências
-@onready var ref_hud_choose_action: CenterContainer = $HUD/ChooseAction;
-@onready var ref_label_action_count: Label = $HUD/ChooseAction/VBoxContainer/Control/amount;
+@onready var ref_hud_choose_action: Control = $HUD/ChooseAction;
+@onready var ref_hud_select_action: Control = $HUD/SelectAction;
+@onready var ref_label_action_count: Label = $HUD/ChooseAction/Control/VBoxContainer/Control/amount;
 @onready var ref_hud_apply_action: VBoxContainer = $HUD/ApplyAction;
 @onready var ref_placement_green_player: SubViewportContainer = $PlacementGreenPlayer;
 @onready var ref_placement_red_player: SubViewportContainer = $PlacementRedPlayer;
@@ -108,7 +109,8 @@ func _physics_process(delta: float) -> void:
 		if(ref_hud_power_attack.value <= 0):
 			power_direction = 10;
 
-	ref_hud_turn_time.visible = Global.IsMyTank() && !is_game_over;
+	if(ref_hud_turn_time):
+		ref_hud_turn_time.visible = Global.IsMyTank() && !is_game_over;
 
 func GetCurrentPlayer() -> CharacterBody2D:
 	return players[Global.GetCurrentPlayer()];
@@ -138,7 +140,7 @@ func ActionManager() -> void:
 		EGlobalEnums.ACTION.SELECTION:
 			if(Global.IsMyTank()):
 				UpdateLabelActionCount();
-				ref_hud_choose_action.visible = true;
+				HUDSelectAction(true);
 		EGlobalEnums.ACTION.CHANGE_PLAYER:
 			if(!is_game_over):
 				action_point = MAX_ACTION_POINTS;
@@ -158,8 +160,8 @@ func DisableAllHUDs() -> void:
 	if(Global.IsSpectator() && is_game_over && spectator_hud_deactivate):
 		return;
 
+	HUDSelectAction(false);
 	ref_hud_apply_action.visible  	   = false;
-	ref_hud_choose_action.visible 	   = false;
 	ref_placement_green_player.visible = false;
 	ref_placement_red_player.visible   = false;
 	ref_hud_change_player.visible      = false;
@@ -263,6 +265,10 @@ func UpdateTimerFromServer(pmin: int, psec: int) -> void:
 	seconds = psec;
 	_on_time_second_pass();
 	ref_hud_time_manager.start(1);
+
+func HUDSelectAction(flag: bool) -> void:
+	ref_hud_select_action.visible = flag;
+	ref_hud_choose_action.visible = flag;
 
 #------------------------- DATA SERVER PROCESSING 
 
