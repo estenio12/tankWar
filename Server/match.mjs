@@ -150,20 +150,26 @@ export class Match
 
     DefineWinner()
     {
-        const PID1_HP = this.Players[0].HP;
-        const PID2_HP = this.Players[1].HP;
-
-        let IDWinner;
-
-        if(PID1_HP > PID2_HP)
-            IDWinner = 0;
-        else if(PID1_HP < PID2_HP)
-            IDWinner = 1;
-        else
-            IDWinner = 2; // # Empate
-
-        let pack = `8|${IDWinner}`;
+        const PID1 = this.Players[0];
+        const PID2 = this.Players[1];
         
-        this.SendPacket(pack)
+        if(PID1 && PID2)
+        {   
+            const PID1_HP = PID1.HP;
+            const PID2_HP = PID2.HP;
+            
+            let IDWinner;
+            
+            if(PID1_HP > PID2_HP)
+                IDWinner = 0;
+            else if(PID1_HP < PID2_HP)
+                IDWinner = 1;
+            else
+                IDWinner = 2; // # Empate
+
+            let pack = `8|${IDWinner}`;
+            
+            this.SendPacket(pack)
+        }
     }
 }
