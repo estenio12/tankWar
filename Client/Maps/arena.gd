@@ -294,11 +294,11 @@ func _on_receive_data_from_server(packet: Dictionary) -> void:
 				ref_red_player.global_position = str_to_var("Vector2"+state_p2[1]);
 				Global.ChangePlayer(player_target);
 				action_point = MAX_ACTION_POINTS;
-				ref_hud_player_name.text = GetCurrentPlayer().player_name;
-				current_action = EGlobalEnums.ACTION.CHANGE_PLAYER;
-				ActionManager();
+				ref_hud_player_name.text = packet["nickname"];
 
 				if(!Global.IsMyTank()):
+					current_action = EGlobalEnums.ACTION.CHANGE_PLAYER;
+					ActionManager();
 					await get_tree().create_timer(2).timeout;
 				
 				if(Global.IsSpectator()):
@@ -338,16 +338,7 @@ func _on_receive_data_from_server(packet: Dictionary) -> void:
 			ref_hud_turn_time_manager.stop();
 			ref_hud_turn_time.visible = false;
 			is_game_over = true;
-
-			var player_won = packet["player"] as EGlobalEnums.PLAYER_TYPE;
-			
-			if(player_won == EGlobalEnums.PLAYER_TYPE.GREEN_PLAYER):
-				winner_name = ref_green_player.player_name;
-			elif(player_won == EGlobalEnums.PLAYER_TYPE.RED_PLAYER):
-				winner_name = ref_red_player.player_name;
-			else:
-				winner_name = "Empate";
-				
+			winner_name = packet["player"];
 			ShowWinnerScreen();
 		EGlobalEnums.NETCODE.START_GAME:
 			ref_hud_bar_screen.visible = true;

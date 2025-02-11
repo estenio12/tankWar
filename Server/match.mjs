@@ -108,7 +108,7 @@ export class Match
             this.Players[1].HP = Number(STATE_P2[0]);
             this.Players[1].position = STATE_P2[1];
 
-            msgPackage = `5|${this.Current_turn}|${chunks[2]}|${chunks[3]}|${chunks[4]}|${this.minute}|${this.second}`;
+            msgPackage = `5|${this.Current_turn}|${chunks[2]}|${chunks[3]}|${chunks[4]}|${this.minute}|${this.second}|${this.Players[this.Current_turn].nickname}`;
         }
 
         if(netcode == 8)
@@ -156,16 +156,16 @@ export class Match
             const PID1_HP = PID1.HP;
             const PID2_HP = PID2.HP;
             
-            let IDWinner;
+            let WinnerName;
             
             if(PID1_HP > PID2_HP)
-                IDWinner = 0;
+                WinnerName = PID1.nickname;
             else if(PID1_HP < PID2_HP)
-                IDWinner = 1;
+                WinnerName = PID2.nickname;
             else
-                IDWinner = 2; // # Empate
+                WinnerName = "Empate";
 
-            let pack = `8|${IDWinner}`;
+            let pack = `8|${WinnerName}`;
             
             this.SendPacket(pack)
         }
