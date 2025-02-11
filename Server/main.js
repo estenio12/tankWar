@@ -57,9 +57,10 @@ wss.on('connection', (ws) =>
         // # Netcode: 17 => Espectador quer a lista de partidas.
         else if(netcode == 17)
         {
-            let match_list = `17|${matches.filter(e => e.GameIsRunning).map(e => `${e.ID}-${e.Players[0].nickname}-${e.Players[1].nickname}`).join('#')}`;
+            let match_list = `17|${matches.filter(e => !e.isGamaOver()).map(e => `${e.ID}-${e.Players[0].nickname}-${e.Players[1].nickname}`).join('#')}`;
             ws.send(match_list);
-            console.log("List: ", match_list);
+            // console.log("List: ", match_list);
+            // console.log("List: ", matches);
         }
         // # Netcode: 18 => Espectador quer assistir a partida.
         else if(netcode == 18)
@@ -127,7 +128,7 @@ setInterval(() =>
     }
 
     // # Limpa as partidas terminadas.
-    matches = matches.filter(e => e.GameIsRunning);
+    matches = matches.filter(e => !e.isGamaOver());
 
 }, 100); // Intervalo de 100ms para verificar novas partidas
 

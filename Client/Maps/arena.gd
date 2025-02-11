@@ -217,7 +217,7 @@ func ShowWinnerScreen() -> void:
 func TimeIsOver() -> void:
 	if(!is_game_over):
 		ref_hud_time_manager.stop();
-		is_game_over = true;
+		#is_game_over = true;
 
 func EnableTurnTime() -> void:
 	if(!is_game_over):
@@ -232,10 +232,10 @@ func EnableTurnTime() -> void:
 
 func TurnTimeOver() -> void:
 	if(!is_game_over):
-		action_point = 0;
-		CheckActionPointCount();
 		ref_green_player.select_angle_active = false;
 		ref_red_player.select_angle_active = false;
+		action_point = 0;
+		CheckActionPointCount();
 
 func UpdateHUDSpectator() -> void:
 	ref_hud_spectator_p1_hp_bar.value = ref_green_player.GetHPBarrier();

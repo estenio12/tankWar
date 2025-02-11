@@ -101,15 +101,8 @@ func ConvertToServerPackege(packet: Dictionary) -> String:
 		EGlobalEnums.NETCODE.RESET_MOVIMENT:
 			pack += str(EGlobalEnums.NETCODE.RESET_MOVIMENT);
 		EGlobalEnums.NETCODE.CHANGE_PLAYER:
-			var playerID = packet["current_player"];
-			
-			if(playerID == 0):
-				playerID = 1;
-			else:
-				playerID = 0;
-
 			pack += str(EGlobalEnums.NETCODE.CHANGE_PLAYER) + "|";
-			pack += str(playerID) + "|";
+			pack += str(packet["current_player"]) + "|";
 			pack += str(packet["state_p1"]) + "|";
 			pack += str(packet["state_p2"]);
 		EGlobalEnums.NETCODE.ATTACK:

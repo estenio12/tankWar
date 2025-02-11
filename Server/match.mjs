@@ -68,8 +68,8 @@ export class Match
 
             if(this.Players[0].IsReady && this.Players[1].IsReady)
             {
-                let turn_select = Math.floor(Math.random() * 2);
-                let pack = `9|${turn_select}`;
+                this.Current_turn = Math.floor(Math.random() * 2);
+                let pack = `9|${this.Current_turn}`;
                 this.SendPacket(pack);
                 // # Inicia a contagem de tempo.
                 this.timerRef = setInterval(() => { this.TimerHandler(); }, 1000);
@@ -83,8 +83,6 @@ export class Match
             let IDPlayer = Number(chunks[1]);
             this.Players[IDPlayer].IsReady = true;
 
-            console.log("Debug fechar: ", IDPlayer);
-
             if(this.Players[0].isCloseGame && this.Players[1].isCloseGame)
             {
                 this.Players.forEach(e => { e.con.close(); e.con = null; });
@@ -96,7 +94,7 @@ export class Match
         if(netcode == 5)
         {
             // # Armazena o turno do jogador atual.
-            this.Current_turn = chunks[1];
+            this.Current_turn = this.Current_turn == 1 ? 0 : 1;
 
             // # Obtém o estado da partida.
             const STATE_P1 = chunks[2].split('-');
@@ -110,12 +108,12 @@ export class Match
             this.Players[1].HP = Number(STATE_P2[0]);
             this.Players[1].position = STATE_P2[1];
 
-            msgPackage += `|${this.minute}|${this.second}`;
+            msgPackage = `5|${this.Current_turn}|${chunks[2]}|${chunks[3]}|${chunks[4]}|${this.minute}|${this.second}`;
         }
 
         if(netcode == 8)
         {
-            setTimeout(() => { this.GameIsRunning = false; },1000);
+            setTimeout(() => { this.GameIsRunning = false; this.minute = 0; this.second = 0; },1000);
         }
 
         // # Repassa os pacotes para os jogadores.
@@ -171,5 +169,10 @@ export class Match
             
             this.SendPacket(pack)
         }
+    }
+
+    isGamaOver()
+    {
+        return !this.GameIsRunning || (this.minute <= 0 && this.second <= 0);
     }
 }
