@@ -24,11 +24,12 @@ var ServerPORT: int = 8080;
 
 var socket: WebSocketPeer;
 
-func debugOS() -> void:
-	if(OS.get_name() == "Windows"):
-		ServerIP = "192.168.1.216";
-	else:
-		ServerIP = "192.168.15.8";
+func _ready() -> void:
+	#var url = JavaScript.eval("window.location.href")  # Obtém a URL completa
+	var hostname = JavaScriptBridge.eval("window.location.hostname");  # Obtém o domínio/IP
+	var port = JavaScriptBridge.eval("window.location.port");  # Obtém a porta
+	ServerIP = hostname;
+	ServerPORT = port;
 
 func _process(_delta: float) -> void:
 	if(socket != null):

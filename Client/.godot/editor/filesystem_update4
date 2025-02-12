@@ -1,4 +1,2 @@
 res://Maps/Arena.tscn
-res://Scripts/global.gd
 res://Maps/arena.gd
-res://Scripts/servernetpacket.gd

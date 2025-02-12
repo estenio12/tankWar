@@ -1051,6 +1051,7 @@ text = "0
 horizontal_alignment = 1
 
 [node name="SelectAction" type="VBoxContainer" parent="HUD"]
+visible = false
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
@@ -1076,6 +1077,7 @@ layout_mode = 2
 texture_normal = SubResource("AtlasTexture_2vyrp")
 
 [node name="ApplyAction" type="VBoxContainer" parent="HUD"]
+visible = false
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5

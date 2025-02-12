@@ -19,8 +19,8 @@ export class Match
     LoadGame()
     {
         // # Define os IDs para cada jogador.
-        let my_tank_p1  = Math.floor(Math.random() * 2);
-        let my_tank_p2  = my_tank_p1 == 1 ? 0 : 1;
+        let my_tank_p1 = Math.floor(Math.random() * 2);
+        let my_tank_p2 = my_tank_p1 == 1 ? 0 : 1;
 
         // # Carrega stats dos jogadores.
         this.Players[0].HP = 5;
@@ -29,7 +29,7 @@ export class Match
         this.Players[1].position = "(1123, 78)";
 
         // # Monta pacote base.
-        let base_pack = `10|${this.ID}|${this.Players[0].nickname}|${this.Players[1].nickname}|`;
+        let base_pack = `10|${this.ID}|${this.Players[my_tank_p1].nickname}|${this.Players[my_tank_p2].nickname}|`;
         
         // # Monta pacote para cada jogador.
         let PID1_Packet = base_pack + my_tank_p1.toString();
@@ -108,7 +108,8 @@ export class Match
             this.Players[1].HP = Number(STATE_P2[0]);
             this.Players[1].position = STATE_P2[1];
 
-            msgPackage = `5|${this.Current_turn}|${chunks[2]}|${chunks[3]}|${chunks[4]}|${this.minute}|${this.second}|${this.Players[this.Current_turn].nickname}`;
+            const msgPackage = `5|${this.Current_turn}|${chunks[2]}|${chunks[3]}|${chunks[4]}|${this.minute}|${this.second}|${this.Players[this.Current_turn].nickname}`;
+            this.SendPacket(msgPackage);
         }
 
         if(netcode == 8)
@@ -174,5 +175,26 @@ export class Match
     isGamaOver()
     {
         return !this.GameIsRunning || (this.minute <= 0 && this.second <= 0);
+    }
+
+    turnChange(chunks)
+    {
+        // # Armazena o turno do jogador atual.
+        this.Current_turn = this.Current_turn == 1 ? 0 : 1;
+
+        // # Obtém o estado da partida.
+        const STATE_P1 = chunks[2].split('-');
+        const STATE_P2 = chunks[3].split('-');
+
+        // # Atualiza o estado do jogador 1.
+        this.Players[0].HP = Number(STATE_P1[0]);
+        this.Players[0].position = STATE_P1[1];
+
+        // # Atualiza o estado do jogador 2.
+        this.Players[1].HP = Number(STATE_P2[0]);
+        this.Players[1].position = STATE_P2[1];
+
+        const msgPackage = `5|${this.Current_turn}|${chunks[2]}|${chunks[3]}|${chunks[4]}|${this.minute}|${this.second}|${this.Players[this.Current_turn].nickname}`;
+        this.SendPacket(msgPackage);
     }
 }
