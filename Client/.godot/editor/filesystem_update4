@@ -1,2 +1,3 @@
-res://Maps/Arena.tscn
+res://UI/lobby.gd
 res://Maps/arena.gd
+res://Scripts/global.gd

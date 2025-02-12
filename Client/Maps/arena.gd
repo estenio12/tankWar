@@ -235,6 +235,7 @@ func TurnTimeOver() -> void:
 		ref_green_player.select_angle_active = false;
 		ref_red_player.select_angle_active = false;
 		action_point = 0;
+		await get_tree().create_timer(1.5).timeout;
 		CheckActionPointCount();
 
 func UpdateHUDSpectator() -> void:

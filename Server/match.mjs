@@ -18,9 +18,11 @@ export class Match
 
     LoadGame()
     {
-        // # Define os IDs para cada jogador.
-        let my_tank_p1 = Math.floor(Math.random() * 2);
-        let my_tank_p2 = my_tank_p1 == 1 ? 0 : 1;
+        // # Sorteia os tanks entre os jogadores.
+        let sortRand = Math.floor(Math.random() * 5);
+
+        for(let i = 0; i < sortRand; i++)
+            this.Players.reverse();
 
         // # Carrega stats dos jogadores.
         this.Players[0].HP = 5;
@@ -29,11 +31,11 @@ export class Match
         this.Players[1].position = "(1123, 78)";
 
         // # Monta pacote base.
-        let base_pack = `10|${this.ID}|${this.Players[my_tank_p1].nickname}|${this.Players[my_tank_p2].nickname}|`;
+        let base_pack = `10|${this.ID}|${this.Players[0].nickname}|${this.Players[1].nickname}|`;
         
         // # Monta pacote para cada jogador.
-        let PID1_Packet = base_pack + my_tank_p1.toString();
-        let PID2_Packet = base_pack + my_tank_p2.toString();
+        let PID1_Packet = `${base_pack}0`;
+        let PID2_Packet = `${base_pack}1`;
 
         // # Envia o pacote de carregamento para cada jogador.
         this.Players[0].con.send(PID1_Packet);
@@ -64,6 +66,7 @@ export class Match
         if(netcode == 12)
         {
             let IDPlayer = Number(chunks[1]);
+
             this.Players[IDPlayer].IsReady = true;
 
             if(this.Players[0].IsReady && this.Players[1].IsReady)
@@ -151,50 +154,26 @@ export class Match
     {
         const PID1 = this.Players[0];
         const PID2 = this.Players[1];
+        let WinnerName = "Empate";
         
         if(PID1 && PID2)
         {   
             const PID1_HP = PID1.HP;
             const PID2_HP = PID2.HP;
             
-            let WinnerName;
-            
             if(PID1_HP > PID2_HP)
                 WinnerName = PID1.nickname;
             else if(PID1_HP < PID2_HP)
                 WinnerName = PID2.nickname;
-            else
-                WinnerName = "Empate";
-
-            let pack = `8|${WinnerName}`;
-            
-            this.SendPacket(pack)
         }
+
+        let pack = `8|${WinnerName}`;
+        
+        this.SendPacket(pack)
     }
 
     isGamaOver()
     {
         return !this.GameIsRunning || (this.minute <= 0 && this.second <= 0);
-    }
-
-    turnChange(chunks)
-    {
-        // # Armazena o turno do jogador atual.
-        this.Current_turn = this.Current_turn == 1 ? 0 : 1;
-
-        // # Obtém o estado da partida.
-        const STATE_P1 = chunks[2].split('-');
-        const STATE_P2 = chunks[3].split('-');
-
-        // # Atualiza o estado do jogador 1.
-        this.Players[0].HP = Number(STATE_P1[0]);
-        this.Players[0].position = STATE_P1[1];
-
-        // # Atualiza o estado do jogador 2.
-        this.Players[1].HP = Number(STATE_P2[0]);
-        this.Players[1].position = STATE_P2[1];
-
-        const msgPackage = `5|${this.Current_turn}|${chunks[2]}|${chunks[3]}|${chunks[4]}|${this.minute}|${this.second}|${this.Players[this.Current_turn].nickname}`;
-        this.SendPacket(msgPackage);
     }
 }
